@@ -1,0 +1,93 @@
+<header class="bg-eethal-50 shadow-md sticky top-0 z-50 border-b-2 border-eethal-200">
+  <div class="section-container">
+    <div class="flex justify-between items-center py-3">
+      <!-- Logo -->
+      <a href="/" class="flex items-center space-x-3 hover:opacity-90 transition-opacity">
+        <img src="/images/logo.png" alt="EETHAL" class="h-12 w-auto">
+        <div class="flex flex-col">
+          <span class="text-2xl font-bold text-eethal-600 leading-tight">EETHAL</span>
+          <span class="text-xs text-gray-600 font-medium">Foundation</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden lg:flex items-center space-x-8">
+        {{ range .Site.Menus.main }}
+          {{ if eq .Name "Young Translators" }}
+            <!-- Dropdown menu for Young Translators -->
+            <div class="relative group">
+              <a href="{{ .URL }}" class="text-gray-700 hover:text-eethal-600 font-medium flex items-center py-2">
+                {{ .Name }}
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </a>
+              <div class="absolute hidden group-hover:block bg-white shadow-lg pt-2 -mt-2 w-56 rounded-md left-0 top-full">
+                <div class="py-2">
+                  {{ range site.Menus.youngtranslators }}
+                  <a href="{{ .URL }}" class="block px-4 py-2 text-gray-700 hover:bg-eethal-50 hover:text-eethal-600">
+                    {{ .Name }}
+                  </a>
+                  {{ end }}
+                </div>
+              </div>
+            </div>
+          {{ else if eq .Name "About" }}
+            <!-- Dropdown menu for About -->
+            <div class="relative group">
+              <a href="{{ .URL }}" class="text-gray-700 hover:text-eethal-600 font-medium flex items-center py-2">
+                {{ .Name }}
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </a>
+              <div class="absolute hidden group-hover:block bg-white shadow-lg pt-2 -mt-2 w-56 rounded-md left-0 top-full">
+                <div class="py-2">
+                  {{ range site.Menus.about }}
+                  <a href="{{ .URL }}" class="block px-4 py-2 text-gray-700 hover:bg-eethal-50 hover:text-eethal-600">
+                    {{ .Name }}
+                  </a>
+                  {{ end }}
+                </div>
+              </div>
+            </div>
+          {{ else }}
+            <a href="{{ .URL }}" class="text-gray-700 hover:text-eethal-600 font-medium">
+              {{ .Name }}
+            </a>
+          {{ end }}
+        {{ end }}
+      </nav>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-eethal-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav id="mobile-menu" class="hidden lg:hidden pb-4 space-y-2">
+      {{ range .Site.Menus.main }}
+        <a href="{{ .URL }}" class="block py-2 text-gray-700 hover:text-eethal-600 font-medium">
+          {{ .Name }}
+        </a>
+        {{ if eq .Name "Young Translators" }}
+          {{ range site.Menus.youngtranslators }}
+          <a href="{{ .URL }}" class="block py-2 pl-4 text-gray-600 hover:text-eethal-600">
+            {{ .Name }}
+          </a>
+          {{ end }}
+        {{ end }}
+        {{ if eq .Name "About" }}
+          {{ range site.Menus.about }}
+          <a href="{{ .URL }}" class="block py-2 pl-4 text-gray-600 hover:text-eethal-600">
+            {{ .Name }}
+          </a>
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    </nav>
+  </div>
+</header>

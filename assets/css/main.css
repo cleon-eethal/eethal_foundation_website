@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn-primary {
+    @apply bg-eethal-600 hover:bg-eethal-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-white border-2 border-eethal-600 text-eethal-600 hover:bg-eethal-50 font-semibold py-3 px-6 rounded-lg transition-colors duration-200;
+  }
+
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .prose-eethal {
+    @apply prose prose-lg prose-eethal-600 max-w-none;
+  }
+
+  /* Center headings in prose content */
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    @apply text-center;
+  }
+}
+
+/* Dropdown menu hover delay for better UX */
+@layer utilities {
+  .group:hover .group-hover\:block {
+    display: block;
+  }
+
+  .group .group-hover\:block {
+    transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+  }
+
+  .group:not(:hover) .group-hover\:block {
+    transition-delay: 0.15s;
+  }
+}

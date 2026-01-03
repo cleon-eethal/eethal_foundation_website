@@ -1,0 +1,15 @@
+{{ $action := .Get "action" }}
+{{ $method := .Get "method" | default "POST" }}
+
+<form action="{{ $action }}" method="{{ $method }}" class="max-w-2xl space-y-6">
+  {{ .Inner }}
+
+  <!-- Formspree spam protection -->
+  <input type="hidden" name="_captcha" value="false">
+
+  <div>
+    <button type="submit" class="btn-primary">
+      Submit
+    </button>
+  </div>
+</form>

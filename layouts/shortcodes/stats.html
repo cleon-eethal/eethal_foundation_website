@@ -1,0 +1,7 @@
+<div class="inline-block bg-white p-6 rounded-lg shadow-md m-4 text-center min-w-[200px]">
+  <div class="text-4xl font-bold text-eethal-600 mb-2">{{ .Get "number" }}</div>
+  <div class="text-gray-700 font-medium">{{ .Get "label" }}</div>
+  {{ with .Get "description" }}
+  <div class="text-sm text-gray-500 mt-2">{{ . }}</div>
+  {{ end }}
+</div>

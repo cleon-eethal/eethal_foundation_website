@@ -1,0 +1,116 @@
+baseURL = "https://www.eethalfoundation.org/"
+languageCode = "en-us"
+title = "EETHAL Foundation"
+theme = ""  # No theme - using custom layouts
+
+# Pagination
+[pagination]
+  pagerSize = 10
+
+# Site parameters
+[params]
+  description = "EETHAL Foundation - Education and Empowerment THrough Applied Languages"
+  author = "EETHAL Foundation"
+
+  # Social media
+  facebook = "https://facebook.com/eethalfoundation"
+  youtube = "https://youtube.com/@eethalfoundation"
+  email = "info@eethalfoundation.org"
+
+  # Branding
+  primaryColor = "#741f8a"
+
+  # Analytics (add after deployment)
+  googleAnalytics = ""
+
+# Main navigation menu
+[menu]
+  [[menu.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+
+  [[menu.main]]
+    name = "Young Translators"
+    url = "/young-translators/"
+    weight = 2
+
+  [[menu.main]]
+    name = "Spoken English"
+    url = "/spoken-english/"
+    weight = 3
+
+  [[menu.main]]
+    name = "Donate"
+    url = "/donate/"
+    weight = 4
+
+  [[menu.main]]
+    name = "About"
+    url = "/about/"
+    weight = 5
+
+# Young Translators submenu (displayed in dropdown)
+[[menu.youngTranslators]]
+  name = "Students: FAQ"
+  url = "/young-translators/students-faq/"
+  weight = 1
+
+[[menu.youngTranslators]]
+  name = "Student Signup"
+  url = "/young-translators/student-signup/"
+  weight = 2
+
+[[menu.youngTranslators]]
+  name = "Adults: FAQ"
+  url = "/young-translators/adults-faq/"
+  weight = 3
+
+[[menu.youngTranslators]]
+  name = "Adult Signup"
+  url = "/young-translators/adult-signup/"
+  weight = 4
+
+[[menu.youngTranslators]]
+  name = "Volunteer Expectations and Policies"
+  url = "/young-translators/volunteer-policies/"
+  weight = 5
+
+[[menu.youngTranslators]]
+  name = "PVSA Awards"
+  url = "/young-translators/pvsa-awards/"
+  weight = 6
+
+[[menu.youngTranslators]]
+  name = "Schedule"
+  url = "/young-translators/schedule/"
+  weight = 7
+
+# About submenu (displayed in dropdown)
+[[menu.about]]
+  name = "Team"
+  url = "/team/"
+  weight = 1
+
+[[menu.about]]
+  name = "Contact Us"
+  url = "/contact/"
+  weight = 2
+
+[[menu.about]]
+  name = "Network"
+  url = "/network/"
+  weight = 3
+
+# Markdown rendering
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true  # Allow HTML in markdown
+  [markup.highlight]
+    style = "monokai"
+
+# Output formats
+[outputs]
+  home = ["HTML", "RSS"]
+  section = ["HTML", "RSS"]

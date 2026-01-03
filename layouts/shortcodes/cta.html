@@ -1,0 +1,9 @@
+<div class="bg-eethal-50 border-l-4 border-eethal-600 p-6 my-8 rounded-r-lg">
+  <h3 class="text-2xl font-bold text-eethal-600 mb-3">{{ .Get "title" }}</h3>
+  <div class="text-gray-700 mb-4">{{ .Inner | markdownify }}</div>
+  {{ with .Get "link" }}
+  <a href="{{ . }}" class="btn-primary inline-block">
+    {{ $.Get "buttonText" | default "Learn More" }}
+  </a>
+  {{ end }}
+</div>
