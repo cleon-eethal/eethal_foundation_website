@@ -1,7 +1,7 @@
 baseURL = "https://www.eethalfoundation.org/"
 languageCode = "en-us"
 title = "EETHAL Foundation"
-theme = ""  # No theme - using custom layouts
+# No theme - using custom layouts
 
 # Pagination
 [pagination]
