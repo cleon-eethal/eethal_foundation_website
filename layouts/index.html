@@ -1,13 +1,16 @@
 {{ define "main" }}
 <!-- Hero Section -->
 {{ with .Params.hero }}
-<section class="relative bg-gradient-to-br from-eethal-600 to-eethal-800 text-white py-16 md:py-24">
-  <div class="section-container">
+<section class="relative bg-cover bg-center bg-no-repeat text-white py-16 md:py-24" style="background-image: url('/images/hero-bg.jpg');">
+  <!-- Dark gradient overlay for text readability -->
+  <div class="absolute inset-0" style="background: linear-gradient(to bottom right, rgba(0,0,0,0.92), rgba(0,0,0,0.88), rgba(116,31,138,0.85));"></div>
+
+  <div class="section-container relative z-10">
     <div class="max-w-4xl">
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.8);">
         {{ .title }}
       </h1>
-      <p class="text-xl md:text-2xl mb-6">
+      <p class="text-xl md:text-2xl mb-6" style="text-shadow: 1px 1px 6px rgba(0,0,0,0.8); white-space: nowrap; overflow: visible;">
         {{ .subtitle }}
       </p>
       {{ with .cta }}
