@@ -36,6 +36,11 @@ title = "EETHAL Foundation"
     weight = 2
 
   [[menu.main]]
+    name = "Stories"
+    url = "/stories/"
+    weight = 2.5
+
+  [[menu.main]]
     name = "Spoken English"
     url = "/spoken-english/"
     weight = 3

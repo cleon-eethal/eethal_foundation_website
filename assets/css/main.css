@@ -16,7 +16,7 @@
   }
 
   .prose-eethal {
-    @apply prose prose-lg prose-eethal-600 max-w-none;
+    @apply prose prose-lg max-w-none;
   }
 
   /* Center headings in prose content */
@@ -25,6 +25,39 @@
   .prose h3,
   .prose h4 {
     @apply text-center;
+  }
+
+  /* Story metadata box */
+  .story-metadata {
+    @apply border-l-4 border-eethal-600 bg-eethal-50 p-6 rounded-r-lg;
+  }
+
+  /* PDF viewer container */
+  .pdf-viewer-container {
+    @apply border border-gray-300 rounded-lg overflow-hidden bg-white shadow-md;
+  }
+
+  /* Tab buttons */
+  .tab-button {
+    @apply font-medium transition-colors duration-200;
+  }
+
+  .tab-button.active {
+    @apply text-eethal-600 border-b-2 border-eethal-600;
+  }
+
+  .tab-button.inactive {
+    @apply text-gray-500 hover:text-eethal-600;
+  }
+
+  /* Story card on landing page */
+  .story-card {
+    @apply bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300;
+  }
+
+  /* Age group badge */
+  .age-badge {
+    @apply inline-block text-xs bg-eethal-100 text-eethal-700 px-3 py-1 rounded-full font-medium;
   }
 }
 
