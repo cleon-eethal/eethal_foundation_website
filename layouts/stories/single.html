@@ -106,10 +106,10 @@
     <!-- PDF Viewers - Tabbed Interface -->
     {{ if .Params.pdfs }}
       <div class="mb-8">
-        <!-- Mobile: Button-Style Tabs -->
-        <div class="md:hidden flex gap-2 mb-4">
+        <!-- Mobile: Button-Style Tabs with Inline Styles -->
+        <div class="md:hidden" style="display: flex; gap: 8px; margin-bottom: 16px;">
           <button id="tab-tamil-mobile"
-                  class="flex-1 mobile-tab-button mobile-tab-active text-base font-bold py-4 px-3 rounded-lg border-3"
+                  style="flex: 1; padding: 16px 12px; font-size: 16px; font-weight: bold; border-radius: 8px; border: 4px solid #741f8a; background-color: #741f8a; color: white; box-shadow: inset 0 4px 8px rgba(0,0,0,0.3); transition: all 0.2s;"
                   onclick="switchTab('tamil')">
             {{ if .Params.titles.tamil }}
               {{ .Params.titles.tamil }}
@@ -118,7 +118,7 @@
             {{ end }}
           </button>
           <button id="tab-english-mobile"
-                  class="flex-1 mobile-tab-button mobile-tab-inactive text-base font-bold py-4 px-3 rounded-lg border-3"
+                  style="flex: 1; padding: 16px 12px; font-size: 16px; font-weight: bold; border-radius: 8px; border: 4px solid #9ca3af; background-color: white; color: #1f2937; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.2s;"
                   onclick="switchTab('english')">
             {{ if .Params.titles.english }}
               {{ .Params.titles.english }}
@@ -197,16 +197,22 @@
           englishDesktop.classList.add('inactive');
         }
 
-        // Mobile tabs - Remove active state
+        // Mobile tabs - Update inline styles
         const tamilMobile = document.getElementById('tab-tamil-mobile');
         const englishMobile = document.getElementById('tab-english-mobile');
-        if (tamilMobile) {
-          tamilMobile.classList.remove('mobile-tab-active');
-          tamilMobile.classList.add('mobile-tab-inactive');
-        }
-        if (englishMobile) {
-          englishMobile.classList.remove('mobile-tab-active');
-          englishMobile.classList.add('mobile-tab-inactive');
+
+        // Inactive style (white background, gray border, raised)
+        const inactiveStyle = 'flex: 1; padding: 16px 12px; font-size: 16px; font-weight: bold; border-radius: 8px; border: 4px solid #9ca3af; background-color: white; color: #1f2937; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.2s;';
+
+        // Active style (purple background, purple border, pressed)
+        const activeStyle = 'flex: 1; padding: 16px 12px; font-size: 16px; font-weight: bold; border-radius: 8px; border: 4px solid #741f8a; background-color: #741f8a; color: white; box-shadow: inset 0 4px 8px rgba(0,0,0,0.3); transition: all 0.2s;';
+
+        if (lang === 'tamil') {
+          if (tamilMobile) tamilMobile.style.cssText = activeStyle;
+          if (englishMobile) englishMobile.style.cssText = inactiveStyle;
+        } else {
+          if (tamilMobile) tamilMobile.style.cssText = inactiveStyle;
+          if (englishMobile) englishMobile.style.cssText = activeStyle;
         }
 
         // Show selected PDF
@@ -218,13 +224,6 @@
         if (selectedDesktop) {
           selectedDesktop.classList.remove('inactive');
           selectedDesktop.classList.add('active');
-        }
-
-        // Activate selected mobile tab
-        const selectedMobile = document.getElementById('tab-' + lang + '-mobile');
-        if (selectedMobile) {
-          selectedMobile.classList.remove('mobile-tab-inactive');
-          selectedMobile.classList.add('mobile-tab-active');
         }
       }
       </script>
