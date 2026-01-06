@@ -41,15 +41,15 @@
 
   /* Tab buttons */
   .tab-button {
-    @apply transition-all duration-200 border-2;
+    @apply transition-all duration-200 border-4;
   }
 
   .tab-button.active {
-    @apply bg-eethal-600 text-white border-eethal-600 shadow-lg;
+    @apply bg-eethal-600 text-white border-eethal-600 shadow-xl;
   }
 
   .tab-button.inactive {
-    @apply bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-eethal-600 hover:text-eethal-600 shadow;
+    @apply bg-gray-100 text-gray-800 border-gray-400 hover:bg-gray-50 hover:border-eethal-600 hover:text-eethal-600 shadow-lg;
   }
 
   /* Story card on landing page */
