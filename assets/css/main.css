@@ -52,17 +52,21 @@
     @apply bg-gray-100 text-gray-800 border-gray-400 hover:bg-gray-50 hover:border-eethal-600 hover:text-eethal-600 shadow-lg;
   }
 
-  /* Mobile tab buttons - simple text style */
+  /* Mobile tab buttons - pressed/unpressed button style */
   .mobile-tab-button {
-    @apply transition-colors duration-200;
+    @apply transition-all duration-200 border-4;
   }
 
   .mobile-tab-active {
-    @apply text-eethal-600 underline decoration-4 underline-offset-4;
+    @apply bg-eethal-600 text-white border-eethal-700 shadow-inner;
+    /* Pressed/inset appearance */
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
   }
 
   .mobile-tab-inactive {
-    @apply text-gray-500;
+    @apply bg-white text-gray-800 border-gray-400 shadow-lg;
+    /* Raised/unpressed appearance */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
   /* Story card on landing page */

@@ -106,10 +106,10 @@
     <!-- PDF Viewers - Tabbed Interface -->
     {{ if .Params.pdfs }}
       <div class="mb-8">
-        <!-- Mobile: Simple Text-Based Tabs -->
-        <div class="md:hidden flex items-center justify-center gap-4 py-4 mb-4 bg-gray-50 border-y-2 border-gray-300">
+        <!-- Mobile: Button-Style Tabs -->
+        <div class="md:hidden flex gap-2 mb-4">
           <button id="tab-tamil-mobile"
-                  class="mobile-tab-button mobile-tab-active text-lg font-bold"
+                  class="flex-1 mobile-tab-button mobile-tab-active text-base font-bold py-4 px-3 rounded-lg border-3"
                   onclick="switchTab('tamil')">
             {{ if .Params.titles.tamil }}
               {{ .Params.titles.tamil }}
@@ -117,9 +117,8 @@
               Tamil
             {{ end }}
           </button>
-          <span class="text-gray-400 text-2xl font-light">|</span>
           <button id="tab-english-mobile"
-                  class="mobile-tab-button mobile-tab-inactive text-lg font-bold"
+                  class="flex-1 mobile-tab-button mobile-tab-inactive text-base font-bold py-4 px-3 rounded-lg border-3"
                   onclick="switchTab('english')">
             {{ if .Params.titles.english }}
               {{ .Params.titles.english }}
