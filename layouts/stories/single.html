@@ -9,6 +9,11 @@
       {{ with .Description }}
         <p class="text-xl text-gray-600">{{ . }}</p>
       {{ end }}
+      {{ with .Params.translators }}
+        <p class="text-lg text-gray-500 italic mt-2">
+          Translated by: {{ delimit . ", " }}
+        </p>
+      {{ end }}
     </header>
 
     <!-- PDF Viewers - Tabbed Interface -->
