@@ -107,9 +107,9 @@
     {{ if .Params.pdfs }}
       <div class="mb-8">
         <!-- Tab Buttons -->
-        <div class="flex border-b border-gray-300 mb-4">
+        <div class="flex gap-2 mb-6">
           <button id="tab-tamil"
-                  class="flex-1 py-3 text-center tab-button active"
+                  class="flex-1 py-4 px-4 md:py-5 md:px-6 text-center tab-button active text-base md:text-lg font-semibold rounded-t-lg"
                   onclick="switchTab('tamil')">
             {{ if .Params.titles.tamil }}
               {{ .Params.titles.tamil }}
@@ -118,7 +118,7 @@
             {{ end }}
           </button>
           <button id="tab-english"
-                  class="flex-1 py-3 text-center tab-button inactive"
+                  class="flex-1 py-4 px-4 md:py-5 md:px-6 text-center tab-button inactive text-base md:text-lg font-semibold rounded-t-lg"
                   onclick="switchTab('english')">
             {{ if .Params.titles.english }}
               {{ .Params.titles.english }}
