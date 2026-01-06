@@ -39,7 +39,7 @@
     border-bottom-right-radius: 24px;
   }
 
-  /* Tab buttons */
+  /* Desktop tab buttons */
   .tab-button {
     @apply transition-all duration-200 border-4;
   }
@@ -50,6 +50,19 @@
 
   .tab-button.inactive {
     @apply bg-gray-100 text-gray-800 border-gray-400 hover:bg-gray-50 hover:border-eethal-600 hover:text-eethal-600 shadow-lg;
+  }
+
+  /* Mobile tab buttons - simple text style */
+  .mobile-tab-button {
+    @apply transition-colors duration-200;
+  }
+
+  .mobile-tab-active {
+    @apply text-eethal-600 underline decoration-4 underline-offset-4;
+  }
+
+  .mobile-tab-inactive {
+    @apply text-gray-500;
   }
 
   /* Story card on landing page */

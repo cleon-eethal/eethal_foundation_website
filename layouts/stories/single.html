@@ -106,9 +106,32 @@
     <!-- PDF Viewers - Tabbed Interface -->
     {{ if .Params.pdfs }}
       <div class="mb-8">
-        <!-- Tab Buttons -->
-        <div class="flex">
-          <button id="tab-tamil"
+        <!-- Mobile: Simple Text-Based Tabs -->
+        <div class="md:hidden flex items-center justify-center gap-4 py-4 mb-4 bg-gray-50 border-y-2 border-gray-300">
+          <button id="tab-tamil-mobile"
+                  class="mobile-tab-button mobile-tab-active text-lg font-bold"
+                  onclick="switchTab('tamil')">
+            {{ if .Params.titles.tamil }}
+              {{ .Params.titles.tamil }}
+            {{ else }}
+              Tamil
+            {{ end }}
+          </button>
+          <span class="text-gray-400 text-2xl font-light">|</span>
+          <button id="tab-english-mobile"
+                  class="mobile-tab-button mobile-tab-inactive text-lg font-bold"
+                  onclick="switchTab('english')">
+            {{ if .Params.titles.english }}
+              {{ .Params.titles.english }}
+            {{ else }}
+              English
+            {{ end }}
+          </button>
+        </div>
+
+        <!-- Desktop: Fancy Tab Buttons -->
+        <div class="hidden md:flex">
+          <button id="tab-tamil-desktop"
                   class="flex-1 py-4 px-4 md:py-5 md:px-6 text-center tab-button active text-base md:text-lg font-semibold"
                   style="border-top-left-radius: 24px; border-top-right-radius: 24px;"
                   onclick="switchTab('tamil')">
@@ -118,7 +141,7 @@
               Tamil Version
             {{ end }}
           </button>
-          <button id="tab-english"
+          <button id="tab-english-desktop"
                   class="flex-1 py-4 px-4 md:py-5 md:px-6 text-center tab-button inactive text-base md:text-lg font-semibold"
                   style="border-top-left-radius: 24px; border-top-right-radius: 24px;"
                   onclick="switchTab('english')">
@@ -163,19 +186,46 @@
         if (tamilPdf) tamilPdf.classList.add('hidden');
         if (englishPdf) englishPdf.classList.add('hidden');
 
-        // Remove active state from all buttons
-        document.getElementById('tab-tamil').classList.remove('active');
-        document.getElementById('tab-tamil').classList.add('inactive');
-        document.getElementById('tab-english').classList.remove('active');
-        document.getElementById('tab-english').classList.add('inactive');
+        // Desktop tabs - Remove active state from all buttons
+        const tamilDesktop = document.getElementById('tab-tamil-desktop');
+        const englishDesktop = document.getElementById('tab-english-desktop');
+        if (tamilDesktop) {
+          tamilDesktop.classList.remove('active');
+          tamilDesktop.classList.add('inactive');
+        }
+        if (englishDesktop) {
+          englishDesktop.classList.remove('active');
+          englishDesktop.classList.add('inactive');
+        }
 
-        // Show selected PDF and activate button
+        // Mobile tabs - Remove active state
+        const tamilMobile = document.getElementById('tab-tamil-mobile');
+        const englishMobile = document.getElementById('tab-english-mobile');
+        if (tamilMobile) {
+          tamilMobile.classList.remove('mobile-tab-active');
+          tamilMobile.classList.add('mobile-tab-inactive');
+        }
+        if (englishMobile) {
+          englishMobile.classList.remove('mobile-tab-active');
+          englishMobile.classList.add('mobile-tab-inactive');
+        }
+
+        // Show selected PDF
         const selectedPdf = document.getElementById('pdf-' + lang);
-        const selectedTab = document.getElementById('tab-' + lang);
         if (selectedPdf) selectedPdf.classList.remove('hidden');
-        if (selectedTab) {
-          selectedTab.classList.remove('inactive');
-          selectedTab.classList.add('active');
+
+        // Activate selected desktop tab
+        const selectedDesktop = document.getElementById('tab-' + lang + '-desktop');
+        if (selectedDesktop) {
+          selectedDesktop.classList.remove('inactive');
+          selectedDesktop.classList.add('active');
+        }
+
+        // Activate selected mobile tab
+        const selectedMobile = document.getElementById('tab-' + lang + '-mobile');
+        if (selectedMobile) {
+          selectedMobile.classList.remove('mobile-tab-inactive');
+          selectedMobile.classList.add('mobile-tab-active');
         }
       }
       </script>
