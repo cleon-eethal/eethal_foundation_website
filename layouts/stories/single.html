@@ -109,7 +109,8 @@
         <!-- Tab Buttons -->
         <div class="flex">
           <button id="tab-tamil"
-                  class="flex-1 py-4 px-4 md:py-5 md:px-6 text-center tab-button active text-base md:text-lg font-semibold rounded-tl-lg"
+                  class="flex-1 py-4 px-4 md:py-5 md:px-6 text-center tab-button active text-base md:text-lg font-semibold"
+                  style="border-top-left-radius: 24px; border-top-right-radius: 24px;"
                   onclick="switchTab('tamil')">
             {{ if .Params.titles.tamil }}
               {{ .Params.titles.tamil }}
@@ -118,7 +119,8 @@
             {{ end }}
           </button>
           <button id="tab-english"
-                  class="flex-1 py-4 px-4 md:py-5 md:px-6 text-center tab-button inactive text-base md:text-lg font-semibold rounded-tr-lg"
+                  class="flex-1 py-4 px-4 md:py-5 md:px-6 text-center tab-button inactive text-base md:text-lg font-semibold"
+                  style="border-top-left-radius: 24px; border-top-right-radius: 24px;"
                   onclick="switchTab('english')">
             {{ if .Params.titles.english }}
               {{ .Params.titles.english }}

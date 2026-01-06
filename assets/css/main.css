@@ -34,7 +34,9 @@
 
   /* PDF viewer container */
   .pdf-viewer-container {
-    @apply border border-gray-300 rounded-lg overflow-hidden bg-white shadow-md;
+    @apply border border-gray-300 overflow-hidden bg-white shadow-md;
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
   }
 
   /* Tab buttons */
