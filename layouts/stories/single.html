@@ -3,12 +3,34 @@
   <div class="section-container">
     <!-- Header -->
     <header class="mb-8">
-      <h1 class="text-4xl md:text-5xl font-bold text-eethal-600 mb-4">
+      <h1 class="text-4xl md:text-5xl font-bold text-eethal-600 mb-6">
         {{ .Title }}
       </h1>
-      {{ with .Description }}
-        <p class="text-xl text-gray-600">{{ . }}</p>
+
+      <!-- Descriptions in styled boxes -->
+      {{ if .Params.descriptions }}
+        <div class="space-y-4 mb-4">
+          <!-- English Description -->
+          {{ with .Params.descriptions.english }}
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+              <p class="text-lg text-gray-700">{{ . }}</p>
+            </div>
+          {{ end }}
+
+          <!-- Tamil Description -->
+          {{ with .Params.descriptions.tamil }}
+            <div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg">
+              <p class="text-lg text-gray-700">{{ . }}</p>
+            </div>
+          {{ end }}
+        </div>
+      {{ else }}
+        <!-- Fallback for old format -->
+        {{ with .Description }}
+          <p class="text-xl text-gray-600 mb-4">{{ . }}</p>
+        {{ end }}
       {{ end }}
+
       {{ with .Params.translators }}
         <p class="text-lg text-gray-500 mt-2" style="font-style: italic;">
           Translated by: {{ delimit . ", " }}

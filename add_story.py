@@ -9,7 +9,8 @@ Usage:
         --english-pdf "https://drive.google.com/file/d/FILE_ID/view" \
         --tamil-pdf "https://drive.google.com/file/d/FILE_ID/view" \
         --translators "Name1, Name2" \
-        --description "A heartwarming story about..." \
+        --english-description "A heartwarming story about..." \
+        --tamil-description "குடும்பத்தைப் பற்றிய ஒரு அன்பான கதை..." \
         --cover-image ~/Downloads/cover.jpg
 """
 
@@ -53,7 +54,8 @@ def create_slug(title: str) -> str:
 def create_story_frontmatter(
     english_title: str,
     tamil_title: str,
-    description: str,
+    english_description: str,
+    tamil_description: str,
     english_pdf: str,
     tamil_pdf: str,
     translators: str,
@@ -71,8 +73,11 @@ def create_story_frontmatter(
 
     frontmatter = f'''---
 title: "{english_title}"
-description: "{description}"
 date: {date.today().isoformat()}
+
+descriptions:
+  english: "{english_description}"
+  tamil: "{tamil_description}"
 
 pdfs:
   tamil: "{tamil_pdf_preview}"
@@ -96,7 +101,8 @@ draft: false
 def create_story(
     english_title: str,
     tamil_title: str,
-    description: str,
+    english_description: str,
+    tamil_description: str,
     english_pdf: str,
     tamil_pdf: str,
     translators: str,
@@ -131,7 +137,8 @@ def create_story(
     frontmatter = create_story_frontmatter(
         english_title,
         tamil_title,
-        description,
+        english_description,
+        tamil_description,
         english_pdf,
         tamil_pdf,
         translators,
@@ -184,9 +191,15 @@ def main():
     )
 
     parser.add_argument(
-        '--description',
+        '--english-description',
         required=True,
-        help='Brief description of the story'
+        help='Brief description of the story in English'
+    )
+
+    parser.add_argument(
+        '--tamil-description',
+        required=True,
+        help='Brief description of the story in Tamil'
     )
 
     parser.add_argument(
@@ -200,7 +213,8 @@ def main():
     create_story(
         english_title=args.english_title,
         tamil_title=args.tamil_title,
-        description=args.description,
+        english_description=args.english_description,
+        tamil_description=args.tamil_description,
         english_pdf=args.english_pdf,
         tamil_pdf=args.tamil_pdf,
         translators=args.translators,
