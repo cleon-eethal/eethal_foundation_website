@@ -1,8 +1,8 @@
 baseURL = "/"
 languageCode = "en-us"
 title = "EETHAL Foundation"
-relativeURLs = true
-canonifyURLs = false
+relativeURLs = false
+canonifyURLs = true
 # No theme - using custom layouts
 
 # Pagination
