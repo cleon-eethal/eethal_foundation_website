@@ -3,8 +3,8 @@ title: "Portrait of Life"
 date: 2026-01-07
 
 descriptions:
-  english: "Portrai of Life"
-  tamil: "Portrai of Life"
+  english: "Portrait of Life"
+  tamil: "Portrait of Life"
 
 pdfs:
   tamil: "https://drive.google.com/file/d/1hlOd2eqjt5rkNpLUtYt7EFD__5mkGM9Z/preview"
