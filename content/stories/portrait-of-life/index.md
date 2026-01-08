@@ -4,7 +4,7 @@ date: 2026-01-07
 
 descriptions:
   english: "Portrait of Life"
-  tamil: "Portrait of Life"
+  tamil: "உயிரோவியம்"
 
 pdfs:
   tamil: "https://drive.google.com/file/d/1hlOd2eqjt5rkNpLUtYt7EFD__5mkGM9Z/preview"
@@ -12,7 +12,7 @@ pdfs:
 
 titles:
   english: "Portrait of Life"
-  tamil: "Portrai of Life"
+  tamil: "உயிரோவியம்"
 
 translators:
     - "Hari Ranganadhan"
