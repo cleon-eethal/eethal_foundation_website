@@ -3,12 +3,6 @@ title: "About EETHAL Foundation"
 description: "Learn about our mission, purpose, and what EETHAL means"
 ---
 
-# About EETHAL Foundation
-
-**EETHAL (ஈதல்)** means "giving" in Tamil. It represents our core value of giving back to the community through **E**ducation and **E**mpowerment **TH**rough **A**pplied **L**anguages.
-
-EETHAL Foundation is a 501(c)(3) non-profit organization. Tax ID: 93-2334788
-
 ![Teen volunteers, May 2025](/images/teen_volunteers_2025.JPG)
 <p class="text-center text-xs text-gray-500 mt-1">Teen volunteers at Arcadia, CA, USA [May 2025]</p>
 
@@ -54,6 +48,6 @@ Adult and teen volunteers teach foundational spoken English to students in rural
 
 EETHAL also stands for Education and Empowerment THrough Applied Languages.
 
-{{< cta title="Support Our Mission" link="/donate/" buttonText="Donate Now" >}}
-Your support helps us continue our important work in the community.
+{{< cta title="Get Involved" link="/young-translators/student-signup/" buttonText="Join Us" >}}
+Become a volunteer and help make a difference in the community.
 {{< /cta >}}

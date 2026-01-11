@@ -8,7 +8,7 @@ hero:
     text: "Learn More"
     link: "/about/"
 
-mission: "**EETHAL (ஈதல்)** strives to empower underprivileged youth worldwide through education, technology, and language training. We connect first-generation immigrant youth with their heritage while creating valuable educational resources for learners everywhere."
+mission: "**EETHAL (ஈதல்)** strives to empower underprivileged youth worldwide through education, technology, and language training. We do this by connecting first-generation diaspora youth with their heritage while creating valuable educational resources for learners everywhere."
 
 programs:
   - title: "Young Translators"
