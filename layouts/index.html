@@ -1,9 +1,15 @@
 {{ define "main" }}
 <!-- Hero Section -->
 {{ with .Params.hero }}
-<section class="relative bg-cover bg-center bg-no-repeat text-white py-16 md:py-24" style="background-image: url('/images/hero-bg.jpg');">
+<section class="relative text-white py-16 md:py-24 overflow-hidden">
+  <!-- Three-image background grid -->
+  <div class="absolute inset-0 flex">
+    <div class="flex-1 bg-cover bg-center" style="background-image: url('/images/hero-bg-spoken-english.jpg');"></div>
+    <div class="flex-1 bg-cover bg-center" style="background-image: url('/images/hero-bg-eethal-3d-printing.jpg');"></div>
+    <div class="flex-1 bg-cover bg-center" style="background-image: url('/images/hero-bg-nasa-jpl-tour.jpg');"></div>
+  </div>
   <!-- Dark gradient overlay for text readability -->
-  <div class="absolute inset-0" style="background: linear-gradient(to bottom right, rgba(0,0,0,0.2), rgba(0,0,0,0.15), rgba(116,31,138,0.25));"></div>
+  <div class="absolute inset-0" style="background: linear-gradient(to bottom right, rgba(0,0,0,0.4), rgba(0,0,0,0.3), rgba(116,31,138,0.4));"></div>
 
   <div class="section-container relative z-10">
     <div class="max-w-4xl">
@@ -104,10 +110,7 @@
       {{ .Params.cta.description | default "Support Tamil language preservation and youth empowerment." }}
     </p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="/donate/" class="bg-white text-eethal-600 hover:bg-eethal-50 font-semibold py-3 px-8 rounded-lg transition-colors">
-        Donate Now
-      </a>
-      <a href="/young-translators/student-signup/" class="border-2 border-white text-white hover:bg-white hover:text-eethal-600 font-semibold py-3 px-8 rounded-lg transition-colors">
+      <a href="/young-translators/student-signup/" class="bg-white text-eethal-600 hover:bg-eethal-50 font-semibold py-3 px-8 rounded-lg transition-colors">
         Get Involved
       </a>
     </div>

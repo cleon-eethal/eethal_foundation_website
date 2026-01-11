@@ -3,7 +3,7 @@ title: "Home"
 description: "EETHAL Foundation - Education and Empowerment THrough Applied Languages"
 hero:
   title: "EETHAL (ஈதல்)"
-  subtitle: "Empowering underprivileged youth through education, technology, and language training"
+  subtitle: "Empowering youth everywhere through education, technology, and language training"
   cta:
     text: "Learn More"
     link: "/about/"
@@ -12,14 +12,14 @@ mission: "**EETHAL (ஈதல்)** strives to empower underprivileged youth wor
 
 programs:
   - title: "Young Translators"
-    description: "First-generation teen volunteers translate high quality content from English to Tamil, including Khan Academy videos and children's books."
+    description: "First-generation teen volunteers translate fun stories around the world from English to their native language"
     icon: "translate"
     link: "/young-translators/"
     buttonText: "Learn More"
     highlights:
-      - "Ages 8-18 welcome"
-      - "PVSA Award eligible"
-      - "No prior Tamil required"
+      - "Language enthusiasts of all ages welcome"
+      - "Learn language in a practical and fun way"
+      - "Basic reading/writing fluency required"
 
   - title: "Spoken English"
     description: "Adult and teen volunteers teach foundational spoken English to students in rural areas online, helping them develop practical English skills."
@@ -29,7 +29,7 @@ programs:
     highlights:
       - "Online classes"
       - "Rural outreach"
-      - "Practical skills focus"
+      - "Practical oral and leadership skills"
 
   - title: "Summer Learning"
     description: "Engaging summer programs featuring creative competitions, STEM learning opportunities including NASA/JPL site tours, and hands-on 3D printing classes."
@@ -43,24 +43,24 @@ programs:
 
 impact:
   - title: "Language Preservation"
-    description: "Preserving Tamil language and culture for future generations through authentic translation and learning experiences."
+    description: "Preserving language and culture for future generations through authentic translation and learning experiences."
     icon: "book"
-    stat: "100+"
+    stat: "1000+"
     statLabel: "Stories Translated"
 
   - title: "Community Service"
     description: "Developing leadership skills and civic responsibility through meaningful volunteer opportunities."
     icon: "users"
-    stat: "50+"
+    stat: "100+"
     statLabel: "Active Volunteers"
 
   - title: "PVSA Recognition"
-    description: "Eligible volunteers earn Presidential Volunteer Service Awards recognizing their dedication to community service."
+    description: "Eligible volunteers have earned Presidential Volunteer Service Awards recognizing their dedication to community service."
     icon: "award"
     stat: "25+"
     statLabel: "Awards Given"
 
 cta:
   title: "Join Our Mission"
-  description: "Support Tamil language preservation and youth empowerment through education and service."
+  description: "Support language preservation and youth empowerment through education and service."
 ---

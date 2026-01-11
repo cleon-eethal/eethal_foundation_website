@@ -16,7 +16,6 @@ This is a Hugo-based static website for the EETHAL Foundation (Education and Emp
 
 ### Setup
 ```bash
-cd eethal
 npm install
 ```
 
@@ -59,10 +58,10 @@ hugo version
 
 ### Site Structure
 
-The Hugo site lives in the `eethal/` directory:
+The Hugo site lives in the repository root:
 
 ```
-eethal/
+eethal_foundation_website/
 ├── config.toml           # Site config, menus, params
 ├── content/              # Markdown content (edit here!)
 ├── layouts/              # HTML templates
@@ -182,12 +181,11 @@ The base URL is set to `https://www.eethalfoundation.org/` in `config.toml`.
 ## Key Conventions
 
 - **All paths are absolute from root** - Use `/images/logo.png`, not `images/logo.png`
-- **Working directory is `eethal/`** - Run all commands from this directory
+- **Working directory is repository root** - Run all commands from `eethal_foundation_website/`
 - **Draft pages** - Use `draft: true` in front matter; view with `hugo server -D`
 - **Menu weights** - Lower numbers appear first in navigation
 - **Brand color** - Use `eethal-600` class for primary purple (#741f8a)
 - **Responsive design** - Mobile-first with Tailwind breakpoints (sm, md, lg)
-- **No Git repo** - This directory is not currently a git repository
 
 ## Important Notes
 
