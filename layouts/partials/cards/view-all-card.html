@@ -1,0 +1,17 @@
+{{/* View All Card - Link to section listing */}}
+<article class="story-card flex flex-col">
+  <div class="h-48 bg-gradient-to-br from-eethal-50 to-eethal-100 flex items-center justify-center">
+    <span class="text-5xl text-eethal-600 font-bold">{{ .count }}+</span>
+  </div>
+  <div class="p-6 flex-grow flex flex-col justify-between">
+    <div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">{{ .label }}</h3>
+      {{ with .count }}
+      <p class="text-gray-600 mb-4">Explore all {{ . }} stories from our translators</p>
+      {{ end }}
+    </div>
+    <a href="{{ .link }}" class="btn-secondary inline-block w-full text-center">
+      Browse Collection
+    </a>
+  </div>
+</article>

@@ -1,0 +1,45 @@
+{{/* Story Card - for featured stories on homepage */}}
+<article class="story-card">
+  <!-- Cover Image -->
+  {{ if .Params.coverImage }}
+    {{ $image := .Resources.GetMatch .Params.coverImage }}
+    {{ if $image }}
+      <div class="aspect-w-16 aspect-h-9 bg-gray-200">
+        <img src="{{ $image.RelPermalink }}"
+             alt="{{ .Title }}"
+             class="object-cover w-full h-48" />
+      </div>
+    {{ else }}
+      <div class="h-48 bg-gradient-to-br from-eethal-600 to-eethal-800 flex items-center justify-center">
+        <span class="text-white text-4xl">📖</span>
+      </div>
+    {{ end }}
+  {{ else }}
+    <div class="h-48 bg-gradient-to-br from-eethal-600 to-eethal-800 flex items-center justify-center">
+      <span class="text-white text-4xl">📖</span>
+    </div>
+  {{ end }}
+
+  <!-- Card Content -->
+  <div class="p-6">
+    <h3 class="text-xl font-bold text-gray-900 mb-2">
+      <a href="{{ .Permalink }}" class="hover:text-eethal-600 transition-colors">
+        {{ .Title }}
+      </a>
+    </h3>
+
+    {{ with .Params.descriptions.english }}
+      <p class="text-gray-600 mb-4 line-clamp-2">{{ . }}</p>
+    {{ end }}
+
+    {{ with .Params.translators }}
+      <p class="text-sm text-gray-500 mb-4">
+        <span class="font-medium">By:</span> {{ delimit . ", " }}
+      </p>
+    {{ end }}
+
+    <a href="{{ .Permalink }}" class="btn-primary inline-block w-full text-center">
+      Read Story
+    </a>
+  </div>
+</article>

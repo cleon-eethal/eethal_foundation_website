@@ -10,7 +10,7 @@
       <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.8);">
         {{ .title }}
       </h1>
-      <p class="text-xl md:text-2xl mb-6" style="text-shadow: 1px 1px 6px rgba(0,0,0,0.8); white-space: nowrap; overflow: visible;">
+      <p class="text-xl md:text-2xl mb-6" style="text-shadow: 1px 1px 6px rgba(0,0,0,0.8);">
         {{ .subtitle }}
       </p>
       {{ with .cta }}
@@ -23,12 +23,94 @@
 </section>
 {{ end }}
 
-<!-- Main Content -->
-<div class="py-12">
-  <div class="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
-    <div class="prose prose-headings:text-center max-w-none">
-      {{ .Content }}
+<!-- Mission Statement (Brief Intro) -->
+<section class="py-12 bg-white">
+  <div class="section-container">
+    <div class="max-w-3xl mx-auto text-center">
+      {{ with .Params.mission }}
+      <p class="text-xl md:text-2xl text-gray-700 leading-relaxed">
+        {{ . | markdownify }}
+      </p>
+      {{ end }}
+      <p class="text-sm text-gray-500 mt-4">
+        EETHAL Foundation is a 501(c)(3) non-profit organization. Tax ID: 93-2334788
+      </p>
+      <a href="/about/" class="inline-block mt-6 text-eethal-600 hover:text-eethal-700 font-medium">
+        Learn more about our mission and what we do &rarr;
+      </a>
     </div>
   </div>
-</div>
+</section>
+
+<!-- Programs Section -->
+{{ with .Params.programs }}
+<section class="py-12 md:py-16">
+  <div class="section-container">
+    <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8">Our Programs</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      {{ range . }}
+      {{ partial "cards/program-card.html" . }}
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+<!-- Featured Stories Section -->
+<section class="py-12 md:py-16 bg-white">
+  <div class="section-container">
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Featured Stories</h2>
+      <a href="/stories/" class="text-eethal-600 hover:text-eethal-700 font-medium hidden sm:inline-block">
+        View All Stories &rarr;
+      </a>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {{ $stories := where site.RegularPages "Section" "stories" }}
+      {{ $featured := first 2 ($stories.ByDate.Reverse) }}
+      {{ range $featured }}
+      {{ partial "cards/story-card.html" . }}
+      {{ end }}
+      <!-- View All Card -->
+      {{ partial "cards/view-all-card.html" (dict "link" "/stories/" "label" "View All Stories" "count" (len $stories)) }}
+    </div>
+    <div class="mt-6 text-center sm:hidden">
+      <a href="/stories/" class="btn-secondary inline-block">
+        View All Stories
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Impact/Mission Cards Section -->
+{{ with .Params.impact }}
+<section class="py-12 md:py-16">
+  <div class="section-container">
+    <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8">Our Impact</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      {{ range . }}
+      {{ partial "cards/impact-card.html" . }}
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+<!-- Final CTA Section -->
+<section class="py-16 md:py-20 bg-eethal-600 text-white">
+  <div class="section-container text-center">
+    <h2 class="text-3xl md:text-4xl font-bold mb-4">{{ .Params.cta.title | default "Join Our Mission" }}</h2>
+    <p class="text-xl text-eethal-100 mb-8 max-w-2xl mx-auto">
+      {{ .Params.cta.description | default "Support Tamil language preservation and youth empowerment." }}
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/donate/" class="bg-white text-eethal-600 hover:bg-eethal-50 font-semibold py-3 px-8 rounded-lg transition-colors">
+        Donate Now
+      </a>
+      <a href="/young-translators/student-signup/" class="border-2 border-white text-white hover:bg-white hover:text-eethal-600 font-semibold py-3 px-8 rounded-lg transition-colors">
+        Get Involved
+      </a>
+    </div>
+  </div>
+</section>
 {{ end }}

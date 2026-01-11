@@ -4,53 +4,63 @@ description: "EETHAL Foundation - Education and Empowerment THrough Applied Lang
 hero:
   title: "EETHAL (ஈதல்)"
   subtitle: "Empowering underprivileged youth through education, technology, and language training"
+  cta:
+    text: "Learn More"
+    link: "/about/"
+
+mission: "**EETHAL (ஈதல்)** strives to empower underprivileged youth worldwide through education, technology, and language training. We connect first-generation immigrant youth with their heritage while creating valuable educational resources for learners everywhere."
+
+programs:
+  - title: "Young Translators"
+    description: "First-generation teen volunteers translate high quality content from English to Tamil, including Khan Academy videos and children's books."
+    icon: "translate"
+    link: "/young-translators/"
+    buttonText: "Learn More"
+    highlights:
+      - "Ages 8-18 welcome"
+      - "PVSA Award eligible"
+      - "No prior Tamil required"
+
+  - title: "Spoken English"
+    description: "Adult and teen volunteers teach foundational spoken English to students in rural areas online, helping them develop practical English skills."
+    icon: "microphone"
+    link: "/spoken-english/"
+    buttonText: "Learn More"
+    highlights:
+      - "Online classes"
+      - "Rural outreach"
+      - "Practical skills focus"
+
+  - title: "Summer Learning"
+    description: "Engaging summer programs featuring creative competitions, STEM learning opportunities including NASA/JPL site tours, and hands-on 3D printing classes."
+    icon: "summer"
+    link: "/summer-learning/"
+    buttonText: "Learn More"
+    highlights:
+      - "Creative competitions"
+      - "NASA/JPL site tours"
+      - "3D printing classes"
+
+impact:
+  - title: "Language Preservation"
+    description: "Preserving Tamil language and culture for future generations through authentic translation and learning experiences."
+    icon: "book"
+    stat: "100+"
+    statLabel: "Stories Translated"
+
+  - title: "Community Service"
+    description: "Developing leadership skills and civic responsibility through meaningful volunteer opportunities."
+    icon: "users"
+    stat: "50+"
+    statLabel: "Active Volunteers"
+
+  - title: "PVSA Recognition"
+    description: "Eligible volunteers earn Presidential Volunteer Service Awards recognizing their dedication to community service."
+    icon: "award"
+    stat: "25+"
+    statLabel: "Awards Given"
+
+cta:
+  title: "Join Our Mission"
+  description: "Support Tamil language preservation and youth empowerment through education and service."
 ---
-
-## Mission
-
-**EETHAL (ஈதல்)** strives to empower the underprivileged youth of the world by improving their education using technology and language training. By helping them acquire specific language skills, we attempt to unlock their potential by having them learn naturally and access world class educational materials and high quality information that are freely available online. On the flip side, EETHAL also strives to enable first generation youth in developed countries to connect with their native roots better by learning and practicing their mother tongue for practical purposes.
-
-EETHAL Foundation is a 501(c)(3) non-profit organization. Tax ID:93-2334788
-
- ![Teen volunteers, May 2025](/images/teen_volunteers_2025.JPG)
-   <p class="text-center text-xs text-gray-500 mt-1">Teen volunteers at Arcadia, CA, USA [May 2025]</p>
-
-## Purpose
-
-There are already a number of great organizations working to improve education. Why do we need yet another organization instead of joining an existing one and help them with their mission?
-
-Languages are more than just a tool for human communication. They are also a means by which one can:
-
-- Get a solid foundational education
-- Acquire knowledge and skills that will help them achieve their goals 
-- Connect with the cultural roots of their community and shared history
-
-In many parts of the Non-English speaking world, children are required to have bilingual skills to compete with the rest of the world. This can be accomplished by:
-
-- Get primary education (K-12) in a medium of language that the student speaks at home. For many rural students across the world, it’s their native mother tongue. By learning the basic subjects such as Mathematics and Sciences in a language they are most familiar with, they are also able to understand the fundamental  concepts properly without rote memorization.
-- At the same time, teach them practical English language skills as they enter middle school/high school years. Having practical English language skills is often a great enabler for their future academic and professional success.
-
-
-On the other side of the coin, EETHAL foundation also strives to impart native language skills to children growing up outside of their mother country. Having these children acquire native language skills help them:
-
-- Connect with their roots by being able to better communicate with their relatives and others in their mother country.
-- Better access to the writings from great leaders and thinkers from their own civilization, from ancient to modern times.
-
-By its unique structure, EETHAL attempts to satisfy these dual objectives of empowering underprivileged children as well as exposing children in privileged environments to their roots at the same time via hands-on programs.
-
-## What We Do
-
-As of August 2023, we have two kinds of programs:
-
-**Translation Programs:**
-First generation teen volunteers from North America work together as teams to translate high quality content from English to native languages. Our current focus is on content for Tamil learners, including Khan Academy videos, StoryWeaver books, and TED-Ed videos. These resources are made available for students in non-English speaking regions.
-
-**Spoken English Programs:**
-Adult and teen volunteers teach foundational spoken English to students in rural areas online, helping them develop practical English skills for academic and professional advancement.
-
-## What Does EETHAL Mean?
-
-**EETHAL (ஈதல்)** is a Tamil word that means "Giving." It represents our core value of giving back to the community.
-
-EETHAL also stands for Education and Empowerment THrough Applied Languages.
-

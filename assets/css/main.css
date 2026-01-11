@@ -78,6 +78,31 @@
   .age-badge {
     @apply inline-block text-xs bg-eethal-100 text-eethal-700 px-3 py-1 rounded-full font-medium;
   }
+
+  /* Program card on homepage */
+  .program-card {
+    @apply bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300;
+  }
+
+  /* Impact/mission card on homepage */
+  .impact-card {
+    @apply bg-white border border-gray-200 rounded-lg p-6 text-center hover:shadow-lg transition-all duration-300;
+  }
+
+  /* Line clamp for card descriptions */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 }
 
 /* Dropdown menu hover delay for better UX */
