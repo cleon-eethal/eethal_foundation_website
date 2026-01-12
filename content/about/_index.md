@@ -34,20 +34,23 @@ By its unique structure, EETHAL attempts to satisfy these dual objectives of emp
 
 ## What We Do
 
-As of August 2023, we have two kinds of programs:
+As of Jan 2026, we have the following programs:
 
-**Translation Programs:**
+**[Translation Programs:](/young-translators/)**
 First generation teen volunteers from North America work together as teams to translate high quality content from English to native languages. Our current focus is on content for Tamil learners, including Khan Academy videos, StoryWeaver books, and TED-Ed videos. These resources are made available for students in non-English speaking regions.
 
-**Spoken English Programs:**
+**[Spoken English Programs:](/spoken-english/)**
 Adult and teen volunteers teach foundational spoken English to students in rural areas online, helping them develop practical English skills for academic and professional advancement.
+
+**[Summer Learning:](/summer-learning/)**
+In summer, we offer special programs to help our young volunteers use their extra time for additional learning through fun activities. In the past, we have offered online courses on 3D printing, organized in-person visits to NASA, and ran creative competitions.
 
 ## What Does EETHAL Mean?
 
-**EETHAL (ஈதல்)** is a Tamil word that means "Giving." It represents our core value of giving back to the community.
+**EETHAL (ஈதல்)** is a [Tamil](https://en.wikipedia.org/wiki/Tamil_language) word that means "Giving." It represents our core value of giving back to the community.
 
 EETHAL also stands for Education and Empowerment THrough Applied Languages.
 
-{{< cta title="Get Involved" link="/young-translators/student-signup/" buttonText="Join Us" >}}
-Become a volunteer and help make a difference in the community.
+{{< cta title="Get Involved" link="/get-involved/" buttonText="Join Us" >}}
+We are looking for both adult and teen volunteers to help make a difference! Most of our programs are virtual and can be done from the comfort of your home with just one hour or less per week.
 {{< /cta >}}

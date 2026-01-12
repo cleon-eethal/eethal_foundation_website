@@ -59,55 +59,65 @@ canonifyURLs = true
 
 # Young Translators submenu (displayed in dropdown)
 [[menu.youngTranslators]]
+  name = "About Young Translators"
+  url = "/young-translators/"
+  weight = 1
+
+[[menu.youngTranslators]]
   name = "Students: FAQ"
   url = "/young-translators/students-faq/"
-  weight = 1
+  weight = 2
 
 [[menu.youngTranslators]]
   name = "Student Signup"
   url = "/young-translators/student-signup/"
-  weight = 2
+  weight = 3
 
 [[menu.youngTranslators]]
   name = "Adults: FAQ"
   url = "/young-translators/adults-faq/"
-  weight = 3
+  weight = 4
 
 [[menu.youngTranslators]]
   name = "Adult Signup"
   url = "/young-translators/adult-signup/"
-  weight = 4
+  weight = 5
 
 [[menu.youngTranslators]]
   name = "Volunteer Expectations and Policies"
   url = "/young-translators/volunteer-policies/"
-  weight = 5
+  weight = 6
 
 [[menu.youngTranslators]]
   name = "PVSA Awards"
   url = "/young-translators/pvsa-awards/"
-  weight = 6
+  weight = 7
 
 [[menu.youngTranslators]]
   name = "Schedule"
   url = "/young-translators/schedule/"
-  weight = 7
+  weight = 8
 
 # About submenu (displayed in dropdown)
 [[menu.about]]
+  name = "About EETHAL Foundation"
+  url = "/about/"
+  weight = 1
+
+[[menu.about]]
   name = "Team"
   url = "/team/"
-  weight = 1
+  weight = 2
 
 [[menu.about]]
   name = "Contact Us"
   url = "/contact/"
-  weight = 2
+  weight = 3
 
 [[menu.about]]
   name = "Network"
   url = "/network/"
-  weight = 3
+  weight = 4
 
 # Markdown rendering
 [markup]

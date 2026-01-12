@@ -62,5 +62,5 @@ impact:
 
 cta:
   title: "Join Our Mission"
-  description: "Support language preservation and youth empowerment through education and service."
+  description: "Make a difference from the comfort of your home! Most of our volunteer programs are virtual and require just one hour or less per week."
 ---
