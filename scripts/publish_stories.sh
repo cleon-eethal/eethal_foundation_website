@@ -74,6 +74,44 @@ if [ ! -d ".git" ]; then
     exit 1
 fi
 
+# Handle CSS watcher if running
+CSS_WATCHER_PID=""
+CSS_WAS_RUNNING=false
+
+if pgrep -f "tailwindcss.*watch" > /dev/null 2>&1; then
+    CSS_WAS_RUNNING=true
+    CSS_WATCHER_PID=$(pgrep -f "tailwindcss.*watch")
+    echo -e "${YELLOW}⚠ Detected running CSS watcher (npm run watch:css)${NC}"
+    echo -e "${YELLOW}  Temporarily pausing to prevent conflicts...${NC}\n"
+
+    # Kill the watcher
+    pkill -f "tailwindcss.*watch" 2>/dev/null || true
+    pkill -f "npm.*watch:css" 2>/dev/null || true
+    sleep 1
+
+    # Restore styles.css if it was modified
+    if ! git diff --quiet static/css/styles.css 2>/dev/null; then
+        git restore static/css/styles.css 2>/dev/null || true
+    fi
+fi
+
+# Trap to restore CSS on exit
+cleanup_css() {
+    # Restore styles.css if it got modified during git operations
+    if ! git diff --quiet static/css/styles.css 2>/dev/null; then
+        echo -e "\n${YELLOW}Restoring styles.css (modified by background process)...${NC}"
+        git restore static/css/styles.css 2>/dev/null || true
+    fi
+
+    # Notify user to restart watcher if it was running
+    if [ "$CSS_WAS_RUNNING" = true ]; then
+        echo -e "${YELLOW}Note: CSS watcher was paused. Restart with:${NC}"
+        echo -e "${YELLOW}  npm run watch:css${NC}"
+    fi
+}
+
+trap cleanup_css EXIT
+
 # Check for changes in content/stories/
 echo -e "${BLUE}Checking for story changes...${NC}\n"
 
