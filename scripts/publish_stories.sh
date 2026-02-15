@@ -5,6 +5,7 @@
 # Usage:
 #   ./scripts/publish_stories.sh              # Review and commit new/changed stories
 #   ./scripts/publish_stories.sh --push       # Commit and push to remote
+#   ./scripts/publish_stories.sh --deploy     # Merge dev to master and deploy
 #   ./scripts/publish_stories.sh --dry-run    # Show what would be committed
 #
 
@@ -20,6 +21,7 @@ NC='\033[0m' # No Color
 # Parse arguments
 DRY_RUN=false
 PUSH=false
+DEPLOY=false
 
 for arg in "$@"; do
     case $arg in
@@ -31,17 +33,23 @@ for arg in "$@"; do
             PUSH=true
             shift
             ;;
+        --deploy)
+            DEPLOY=true
+            shift
+            ;;
         --help|-h)
             echo "Usage: ./scripts/publish_stories.sh [OPTIONS]"
             echo ""
             echo "Options:"
             echo "  --dry-run    Show what would be committed without making changes"
             echo "  --push       Commit and push to remote (origin/dev)"
+            echo "  --deploy     Merge dev to master and push (for production deployment)"
             echo "  --help       Show this help message"
             echo ""
             echo "Examples:"
             echo "  ./scripts/publish_stories.sh              # Review and commit"
-            echo "  ./scripts/publish_stories.sh --push       # Commit and push"
+            echo "  ./scripts/publish_stories.sh --push       # Commit and push to dev"
+            echo "  ./scripts/publish_stories.sh --deploy     # Deploy to production (master)"
             echo "  ./scripts/publish_stories.sh --dry-run    # Preview changes"
             exit 0
             ;;
@@ -146,4 +154,89 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 else
     echo -e "${GREEN}No changes detected in content/stories/${NC}"
     echo "All stories are already committed."
+fi
+
+# Deploy mode: Merge dev to master and push
+if [ "$DEPLOY" = true ]; then
+    echo ""
+    echo -e "${BLUE}========================================${NC}"
+    echo -e "${BLUE}  Deploying to Production (master)${NC}"
+    echo -e "${BLUE}========================================${NC}"
+    echo ""
+
+    # Check current branch
+    CURRENT_BRANCH=$(git branch --show-current)
+
+    if [ "$CURRENT_BRANCH" != "dev" ]; then
+        echo -e "${RED}Error: Deploy must be run from dev branch${NC}"
+        echo "Current branch: $CURRENT_BRANCH"
+        echo ""
+        echo "Switch to dev first:"
+        echo "  git checkout dev"
+        exit 1
+    fi
+
+    # Check if there are uncommitted changes
+    if ! git diff --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+        echo -e "${RED}Error: You have uncommitted changes${NC}"
+        echo "Please commit or stash your changes first:"
+        echo "  git status"
+        exit 1
+    fi
+
+    # Push dev to origin first
+    echo -e "${BLUE}Step 1: Pushing dev to origin...${NC}"
+    git push origin dev
+    echo -e "${GREEN}✓ Pushed dev to origin${NC}\n"
+
+    # Switch to master
+    echo -e "${BLUE}Step 2: Switching to master branch...${NC}"
+    git checkout master
+    echo -e "${GREEN}✓ Switched to master${NC}\n"
+
+    # Pull latest master
+    echo -e "${BLUE}Step 3: Pulling latest master from origin...${NC}"
+    git pull origin master
+    echo -e "${GREEN}✓ Updated master${NC}\n"
+
+    # Show what will be merged
+    echo -e "${YELLOW}Commits that will be merged from dev:${NC}"
+    git log master..dev --oneline --decorate | head -10
+    echo ""
+
+    # Ask for confirmation
+    echo -e "${YELLOW}Do you want to merge dev to master and deploy? (yes/no):${NC} "
+    read -r CONFIRM
+
+    if [[ ! "$CONFIRM" =~ ^[Yy](es)?$ ]]; then
+        echo -e "${YELLOW}Cancelled - switching back to dev${NC}"
+        git checkout dev
+        exit 0
+    fi
+
+    # Merge dev into master
+    echo -e "\n${BLUE}Step 4: Merging dev into master...${NC}"
+    git merge dev --no-edit -m "Merge dev to master for deployment"
+    echo -e "${GREEN}✓ Merged dev into master${NC}\n"
+
+    # Push master to origin
+    echo -e "${BLUE}Step 5: Pushing master to origin...${NC}"
+    git push origin master
+    echo -e "${GREEN}✓ Pushed master to origin${NC}\n"
+
+    # Switch back to dev
+    echo -e "${BLUE}Step 6: Switching back to dev branch...${NC}"
+    git checkout dev
+    echo -e "${GREEN}✓ Back on dev${NC}\n"
+
+    echo -e "${GREEN}========================================${NC}"
+    echo -e "${GREEN}  ✓ Deployment Complete!${NC}"
+    echo -e "${GREEN}========================================${NC}"
+    echo ""
+    echo -e "${GREEN}Your changes are now live on master.${NC}"
+    echo ""
+    echo "Next steps:"
+    echo "  - Check your deployment pipeline/CI"
+    echo "  - Verify the production site"
+    echo "  - Continue development on dev branch"
 fi
