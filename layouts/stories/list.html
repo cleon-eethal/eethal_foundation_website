@@ -47,12 +47,30 @@
 
             <!-- Card Content -->
             <div class="p-6">
-              <!-- Title -->
-              <h2 class="text-2xl font-bold text-gray-900 mb-2">
+              <!-- Title - English and Tamil -->
+              <h2 class="text-2xl font-bold text-gray-900 mb-1">
                 <a href="{{ .Permalink }}" class="hover:text-eethal-600 transition-colors">
-                  {{ .Title }}
+                  {{ if .Params.titles.english }}
+                    {{ .Params.titles.english }}
+                  {{ else }}
+                    {{ .Title }}
+                  {{ end }}
                 </a>
               </h2>
+
+              <!-- Tamil Title -->
+              {{ with .Params.titles.tamil }}
+                <p class="text-lg text-eethal-600 mb-3 font-medium">
+                  {{ . }}
+                </p>
+              {{ end }}
+
+              <!-- Translators -->
+              {{ with .Params.translators }}
+                <p class="text-sm text-gray-600 mb-4">
+                  <span class="font-medium">Translated by:</span> {{ delimit . ", " }}
+                </p>
+              {{ end }}
 
               <!-- Description -->
               {{ with .Description }}
@@ -71,14 +89,6 @@
                   <span class="age-badge">{{ . }}</span>
                 {{ end }}
               </div>
-
-              <!-- Translators -->
-              {{ with .Params.metadata.translators }}
-                <p class="text-sm text-gray-500 mb-4">
-                  <span class="font-medium">Translated by:</span>
-                  {{ delimit . ", " }}
-                </p>
-              {{ end }}
 
               <!-- Read Button -->
               <a href="{{ .Permalink }}" class="btn-primary inline-block w-full text-center">
