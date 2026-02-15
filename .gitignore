@@ -3,3 +3,14 @@
 node_modules/
 .hugo_build.lock
 .DS_Store
+.venv/
+scripts/.venv/
+credentials.json
+token.json
+
+# Python script outputs
+__pycache__/
+*.py[cod]
+*$py.class
+*.csv
+*.pyc
