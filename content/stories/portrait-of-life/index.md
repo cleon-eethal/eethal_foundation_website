@@ -1,6 +1,6 @@
 ---
 title: "Portrait of Life"
-date: 2026-01-07
+date: 2026-02-14
 
 descriptions:
   english: "Portrait of Life"
