@@ -42,6 +42,33 @@ hugo --minify
 npm run build:css && hugo --minify
 ```
 
+### Story Management
+
+**IMPORTANT**: Use the `publish_stories.sh` script for all story publishing and deployment tasks:
+
+```bash
+# Review and commit new/changed stories (interactive)
+./scripts/publish_stories.sh
+
+# Commit and push stories to dev branch
+./scripts/publish_stories.sh --push
+
+# Deploy to production (merge dev to master and push)
+./scripts/publish_stories.sh --deploy
+
+# Preview what would be committed without making changes
+./scripts/publish_stories.sh --dry-run
+```
+
+The script handles:
+- Auto-detecting new and modified stories in `content/stories/`
+- Generating appropriate commit messages
+- Managing CSS watcher conflicts during git operations
+- Safe deployment workflow from dev to master
+- Building and minifying CSS for production
+
+**Always use this script instead of manual git commands for story-related changes.**
+
 ### Other Commands
 ```bash
 # Build CSS once without watching
