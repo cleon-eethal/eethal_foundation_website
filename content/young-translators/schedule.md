@@ -1,22 +1,8 @@
 ---
 title: "Schedule"
-description: "Young Translators program schedule and calendar"
+description: "Young Translators program schedule and calendar (2026)"
 ---
-
-# Program Schedule
 
 Stay up to date with Young Translators program meetings, events, and important dates.
 
-## Meeting Times
-
-**Schedule coming soon!**
-
-This page will include:
-- Regular meeting times
-- Special events and workshops
-- Holiday breaks
-- Registration deadlines
-
-{{< cta title="Join Us" link="/young-translators/student-signup/" buttonText="Sign Up" >}}
-Ready to participate? Sign up for the Young Translators program!
-{{< /cta >}}
+<iframe src="https://docs.google.com/spreadsheets/d/1vZWT8yQ3IWN-Mks0mJojtNPO53LAou5HgVMCKHN2LsY/edit?usp=sharing&amp;rm=minimal" width="100%" height="800" frameborder="0" style="max-width: 100%;"></iframe>

@@ -3,8 +3,10 @@ title: "About EETHAL Foundation"
 description: "Learn about our mission, purpose, and what EETHAL means"
 ---
 
-![Teen volunteers, May 2025](/images/teen_volunteers_2025.JPG)
-<p class="text-center text-xs text-gray-500 mt-1">Teen volunteers at Arcadia, CA, USA [May 2025]</p>
+<figure style="max-width: 500px; margin: 1rem 0;">
+  <img src="/images/teen_volunteers_2025.JPG" alt="Teen volunteers, May 2025" style="width: 100%; border-radius: 8px;">
+  <figcaption style="font-style: italic; color: #666; font-size: 0.85em; margin-top: 0.5rem;">Teen volunteers at Arcadia, CA, USA [May 2025]</figcaption>
+</figure>
 
 ## Our Mission
 

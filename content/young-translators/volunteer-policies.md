@@ -3,22 +3,6 @@ title: "Volunteer Expectations and Policies"
 description: "Guidelines and policies for Young Translators volunteers"
 ---
 
-# Volunteer Expectations and Policies
+Please review the volunteer expectations and policies document below.
 
-## Our Commitment to Excellence
-
-EETHAL Foundation maintains high standards for our volunteer program to ensure the best experience for students and volunteers alike.
-
-## Volunteer Expectations
-
-**Content coming soon!**
-
-This page will include:
-- Code of conduct
-- Attendance expectations
-- Communication guidelines
-- Responsibilities and duties
-
-{{< cta title="Ready to Volunteer?" link="/young-translators/adult-signup/" buttonText="Sign Up" >}}
-Committed to making a difference? Join our volunteer team!
-{{< /cta >}}
+<iframe src="https://drive.google.com/file/d/131UxxrI2kY2Sv11rSV16eHcSSqRC4fVE/preview" width="100%" height="800" frameborder="0" style="max-width: 100%;" allow="autoplay"></iframe>

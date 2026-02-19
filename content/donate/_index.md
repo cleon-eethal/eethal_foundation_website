@@ -23,22 +23,6 @@ Send to: info@eethalfoundation.org
 
 @eethalfoundation
 
-### Check
-
-Make checks payable to "EETHAL Foundation" and mail to:
-
-EETHAL Foundation
-[Address]
-[City, State ZIP]
-
-## Your Impact
-
-Every donation helps us:
-- Provide free educational programs to Tamil-American youth
-- Develop translation resources for the community
-- Preserve Tamil language and culture
-- Award Presidential Volunteer Service Awards to deserving students
-
 {{< cta title="Questions?" link="/contact/" buttonText="Contact Us" >}}
 Interested in sponsoring a program or making a larger gift? We'd love to talk!
 {{< /cta >}}

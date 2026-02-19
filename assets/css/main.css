@@ -19,11 +19,11 @@
     @apply prose prose-lg max-w-none;
   }
 
-  /* Center headings in prose content */
-  .prose h1,
-  .prose h2,
-  .prose h3,
-  .prose h4 {
+  /* Center headings only in story prose content */
+  .prose-story h1,
+  .prose-story h2,
+  .prose-story h3,
+  .prose-story h4 {
     @apply text-center;
   }
 
