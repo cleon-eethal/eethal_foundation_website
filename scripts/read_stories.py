@@ -6,16 +6,17 @@ extracts titles and translator names from page 1, and descriptions from the
 last page of each PDF.
 
 Only processes rows that have StoryWeaver links in columns F and G.
-With --make-public, makes ALL Drive files in columns C, D, and E public.
+When using the Drive API (OAuth credentials available), automatically makes
+each file publicly viewable before downloading.
 
 Usage:
     source .venv/bin/activate
     python read_stories.py
     python read_stories.py -o descriptions.csv
+    python read_stories.py --rows 5-10            # process stories 5 through 10
+    python read_stories.py --rows 7               # process only story 7
     python read_stories.py --ocr gemini           # use Gemini OCR (recommended)
     python read_stories.py --ocr tesseract        # use Tesseract OCR (fallback)
-    python read_stories.py --make-public          # make Drive files public first
-
 Requirements (install via: pip install -r requirements.txt):
     - requests
     - PyMuPDF
@@ -44,7 +45,7 @@ Setup for Google Cloud Translation (recommended for Tamil descriptions):
     Tamil descriptions are now translated from English rather than extracted from
     Tamil PDFs, avoiding font encoding issues. Falls back to Tamil PDF if needed.
 
-Setup for --make-public:
+Setup for Google Drive API (auto-makes files public before downloading):
     1. Go to https://console.cloud.google.com/
     2. Create a project (or select existing)
     3. Enable the Google Drive API
@@ -137,11 +138,12 @@ def parse_args():
 examples:
   python read_stories.py                      # run with defaults (Gemini OCR)
   python read_stories.py -n 3                # only process first 3 stories
+  python read_stories.py --rows 5-10         # process stories 5 through 10
+  python read_stories.py --rows 7            # process only story 7
   python read_stories.py --ocr tesseract     # use Tesseract instead of Gemini
   python read_stories.py --lang eng          # English descriptions only
   python read_stories.py -o output.csv       # save results to a CSV file
   python read_stories.py -q                  # suppress verbose logs
-  python read_stories.py --make-public       # make Drive PDFs public, then extract
 """,
     )
     parser.add_argument(
@@ -149,9 +151,9 @@ examples:
         help="only process the first N stories (default: all)",
     )
     parser.add_argument(
-        "--make-public", action="store_true",
-        help="use Google Drive API to make ALL Drive files (columns C, D, E) publicly "
-             "viewable for ALL rows (requires credentials.json from Google Cloud Console)",
+        "--rows", metavar="RANGE",
+        help="process a specific range of stories, e.g. '5-10' or '7' "
+             "(1-based index among stories with SW links)",
     )
     parser.add_argument(
         "-o", "--output", metavar="FILE",
@@ -200,15 +202,22 @@ def _get_col(row, idx):
 
 
 def parse_all_rows(csv_text):
-    """Parse CSV and return ALL data rows (for --make-public)."""
+    """Parse CSV and return ALL data rows (for --make-public).
+
+    Each row includes a 'row_num' field with its spreadsheet row number
+    (row 1 = header, row 2 = first data row).
+    """
     reader = csv.reader(io.StringIO(csv_text))
-    next(reader)  # skip header row
+    next(reader)  # skip header row (row 1)
 
     rows = []
+    row_num = 1  # header is row 1
     for row in reader:
+        row_num += 1
         if not any(cell.strip() for cell in row):
             continue  # skip completely empty rows
         rows.append({
+            "row_num": row_num,
             "english_title": _get_col(row, COL_ENGLISH_TITLE),
             "tamil_title": _get_col(row, COL_TAMIL_TITLE),
             "pdf_eng": _get_col(row, COL_PDF_ENG),
@@ -282,42 +291,25 @@ def get_drive_service():
     return build("drive", "v3", credentials=creds), creds
 
 
-def make_files_public(drive_service, all_rows):
-    """Set 'anyone with link can view' permission on all Drive files in columns C, D, E."""
-    file_ids = set()
-    for row in all_rows:
-        for col in ("pdf_eng", "pdf_tam", "image"):
-            if row.get(col):
-                fid = extract_drive_file_id(row[col])
-                if fid:
-                    file_ids.add(fid)
-
-    log(f"Making {len(file_ids)} Drive files publicly viewable...")
-    success = 0
-    skipped = 0
-    failed = 0
-
-    for fid in file_ids:
-        try:
-            # Check existing permissions
-            perms = drive_service.permissions().list(fileId=fid).execute()
-            already_public = any(
-                p.get("type") == "anyone" for p in perms.get("permissions", [])
-            )
-            if already_public:
-                skipped += 1
-                continue
-
-            drive_service.permissions().create(
-                fileId=fid,
-                body={"type": "anyone", "role": "reader"},
-            ).execute()
-            success += 1
-        except Exception as e:
-            log(f"    Failed to update permissions for {fid}: {e}")
-            failed += 1
-
-    log(f"Done: {success} made public, {skipped} already public, {failed} failed.")
+def make_file_public(drive_service, drive_url):
+    """Ensure a single Drive file is publicly viewable. No-op if already public."""
+    file_id = extract_drive_file_id(drive_url)
+    if not file_id:
+        return
+    try:
+        perms = drive_service.permissions().list(fileId=file_id).execute()
+        already_public = any(
+            p.get("type") == "anyone" for p in perms.get("permissions", [])
+        )
+        if already_public:
+            return
+        drive_service.permissions().create(
+            fileId=file_id,
+            body={"type": "anyone", "role": "reader"},
+        ).execute()
+        log(f"    Made file {file_id} publicly viewable.")
+    except Exception as e:
+        log(f"    Could not set public permissions for {file_id}: {e}")
 
 
 def download_pdf(drive_url, dest_path, drive_service=None):
@@ -329,6 +321,7 @@ def download_pdf(drive_url, dest_path, drive_service=None):
 
     # Prefer Drive API (handles private files + avoids gdown confirmation issues)
     if drive_service:
+        make_file_public(drive_service, drive_url)
         try:
             from googleapiclient.http import MediaIoBaseDownload
             request = drive_service.files().get_media(fileId=file_id)
@@ -942,9 +935,38 @@ def main():
         sys.exit(1)
 
     all_rows = parse_all_rows(csv_text)
-    stories = [r for r in all_rows if r["sw_link_eng"] or r["sw_link_tam"]]
+    max_row = all_rows[-1]["row_num"] if all_rows else 1
 
-    if args.limit > 0:
+    if args.rows:
+        # Parse range like "5-10" or single number like "7" (spreadsheet row numbers)
+        match = re.match(r'^(\d+)(?:-(\d+))?$', args.rows)
+        if not match:
+            print(f"Error: invalid --rows format '{args.rows}'. Use e.g. '5-10' or '7'.",
+                  file=sys.stderr)
+            sys.exit(1)
+        row_start = int(match.group(1))
+        row_end = int(match.group(2)) if match.group(2) else row_start
+        if row_start < 2:
+            print(f"Error: row 1 is the header. Data rows start at 2.", file=sys.stderr)
+            sys.exit(1)
+        if row_end < row_start:
+            print(f"Error: invalid --rows range {row_start}-{row_end}.", file=sys.stderr)
+            sys.exit(1)
+        if row_start > max_row:
+            print(f"Error: start row {row_start} exceeds last data row ({max_row}).",
+                  file=sys.stderr)
+            sys.exit(1)
+        # Filter to the requested spreadsheet row range, then to SW-link rows
+        rows_in_range = [r for r in all_rows if row_start <= r["row_num"] <= row_end]
+        stories = [r for r in rows_in_range if r["sw_link_eng"] or r["sw_link_tam"]]
+        if not stories:
+            print(f"No stories with SW links found in rows {row_start}-{row_end}.")
+            sys.exit(0)
+        log(f"Processing {len(stories)} stories from spreadsheet rows {row_start}-{row_end}.")
+    else:
+        stories = [r for r in all_rows if r["sw_link_eng"] or r["sw_link_tam"]]
+
+    if not args.rows and args.limit > 0:
         stories = stories[:args.limit]
         log(f"Limited to first {args.limit} stories.")
 
@@ -969,22 +991,15 @@ def main():
         except Exception as e:
             log(f"OAuth failed ({e}), falling back to public download and no translation.")
 
-    # Step 2b (optional): Make ALL Drive files public (columns C, D, E for ALL rows)
-    if args.make_public:
-        if not drive_service:
-            print("Error: --make-public requires credentials.json", file=sys.stderr)
-            sys.exit(1)
-        make_files_public(drive_service, all_rows)
-
     # Step 3: Download PDFs and extract descriptions + page 1 info
     start_time = time.time()
     results = []
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        for i, story in enumerate(stories, 1):
+        for idx, story in enumerate(stories, 1):
             elapsed = time.time() - start_time
             print(f"\n{'='*70}")
-            print(f"[{i}/{len(stories)}] {story['english_title']} / {story['tamil_title']}  (elapsed: {elapsed:.0f}s)")
+            print(f"[{idx}/{len(stories)}] Row {story['row_num']}: {story['english_title']} / {story['tamil_title']}  (elapsed: {elapsed:.0f}s)")
             print(f"{'='*70}")
 
             eng_desc = ""
@@ -995,7 +1010,7 @@ def main():
 
             # English PDF
             if fetch_eng and story["pdf_eng"]:
-                pdf_path = os.path.join(tmpdir, f"eng_{i}.pdf")
+                pdf_path = os.path.join(tmpdir, f"eng_{idx}.pdf")
                 log(f"    Downloading English PDF...")
                 if download_pdf(story["pdf_eng"], pdf_path, drive_service):
                     page1 = extract_page1_info(pdf_path)
@@ -1016,7 +1031,7 @@ def main():
 
             # Tamil: Always download PDF for title, but translate description from English
             if fetch_tam and story["pdf_tam"]:
-                pdf_path = os.path.join(tmpdir, f"tam_{i}.pdf")
+                pdf_path = os.path.join(tmpdir, f"tam_{idx}.pdf")
                 log(f"    Downloading Tamil PDF...")
                 if download_pdf(story["pdf_tam"], pdf_path, drive_service):
                     # Always extract Tamil title from PDF
