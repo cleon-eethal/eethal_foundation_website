@@ -96,7 +96,8 @@ HAS_OCR = HAS_TESSERACT or HAS_GEMINI
 # Translation API scope added for OAuth-based translation
 SCOPES = [
     "https://www.googleapis.com/auth/drive",
-    "https://www.googleapis.com/auth/cloud-translation"
+    "https://www.googleapis.com/auth/cloud-translation",
+    "https://www.googleapis.com/auth/spreadsheets",
 ]
 TOKEN_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "token.json")
 CREDENTIALS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "credentials.json")
@@ -246,6 +247,169 @@ def extract_drive_file_id(url):
     """Extract the Google Drive file ID from a Drive URL."""
     match = re.search(r"/d/([a-zA-Z0-9_-]+)", url)
     return match.group(1) if match else None
+
+
+def extract_cover_image(pdf_path, output_path):
+    """Extract the largest image from page 1 of a PDF and save it as PNG.
+
+    Selects the largest image by pixel area (the cover illustration, not logos).
+    Handles CMYK-to-RGB conversion for compatibility.
+
+    Returns True if an image was successfully extracted, False otherwise.
+    """
+    try:
+        doc = fitz.open(pdf_path)
+        page = doc[0]
+        images = page.get_images(full=True)
+
+        if not images:
+            log("    No images found on page 1.")
+            doc.close()
+            return False
+
+        # Find the largest image by pixel area
+        best_xref = None
+        best_area = 0
+        for img_info in images:
+            xref = img_info[0]
+            width = img_info[2]
+            height = img_info[3]
+            area = width * height
+            if area > best_area:
+                best_area = area
+                best_xref = xref
+
+        if best_xref is None:
+            doc.close()
+            return False
+
+        pix = fitz.Pixmap(doc, best_xref)
+
+        # Convert CMYK to RGB if needed
+        if pix.n - pix.alpha > 3:
+            pix = fitz.Pixmap(fitz.csRGB, pix)
+
+        pix.save(output_path)
+        doc.close()
+
+        log(f"    Extracted cover image ({best_area} pixels): {os.path.basename(output_path)}")
+        return True
+
+    except Exception as e:
+        log(f"    Failed to extract cover image: {e}")
+        return False
+
+
+def get_parent_folder_id(drive_service, file_id):
+    """Get the parent folder ID of a file on Google Drive."""
+    try:
+        file_meta = drive_service.files().get(
+            fileId=file_id, fields='parents'
+        ).execute()
+        parents = file_meta.get('parents', [])
+        return parents[0] if parents else None
+    except Exception as e:
+        log(f"    Could not get parent folder: {e}")
+        return None
+
+
+def upload_image_to_drive(drive_service, local_path, filename, folder_id):
+    """Upload an image file to a specific Google Drive folder.
+
+    Returns the Drive file ID of the uploaded file, or None on failure.
+    """
+    from googleapiclient.http import MediaFileUpload
+
+    try:
+        file_metadata = {
+            'name': filename,
+            'parents': [folder_id],
+        }
+        media = MediaFileUpload(local_path, mimetype='image/png', resumable=True)
+        uploaded = drive_service.files().create(
+            body=file_metadata, media_body=media, fields='id'
+        ).execute()
+        file_id = uploaded.get('id')
+        log(f"    Uploaded image to Drive: {filename} (ID: {file_id})")
+        return file_id
+    except Exception as e:
+        log(f"    Failed to upload image to Drive: {e}")
+        return None
+
+
+def get_sheets_service(creds):
+    """Build a Google Sheets API v4 service from OAuth credentials."""
+    from googleapiclient.discovery import build
+    return build('sheets', 'v4', credentials=creds)
+
+
+def write_image_url_to_sheet(sheets_service, row_num, image_url):
+    """Write an image URL to column E of the specified row in the Google Sheet."""
+    try:
+        sheets_service.spreadsheets().values().update(
+            spreadsheetId=SPREADSHEET_ID,
+            range=f"E{row_num}",
+            valueInputOption='RAW',
+            body={'values': [[image_url]]},
+        ).execute()
+        log(f"    Wrote image URL to E{row_num}")
+        return True
+    except Exception as e:
+        log(f"    Failed to write image URL to spreadsheet: {e}")
+        return False
+
+
+def process_cover_image(pdf_path, story, drive_service, sheets_service, tmpdir, idx):
+    """Extract cover image from PDF, upload to Drive, and update spreadsheet.
+
+    Skips if column E already has a value or if Drive API is unavailable.
+    Returns the public Drive URL of the uploaded image, or None.
+    """
+    if story["image"]:
+        log(f"    Image already set in spreadsheet, skipping extraction.")
+        return story["image"]
+
+    if not drive_service:
+        log(f"    Drive API not available, skipping image extraction.")
+        return None
+
+    # Step 1: Extract cover image from page 1
+    image_path = os.path.join(tmpdir, f"cover_{idx}.png")
+    if not extract_cover_image(pdf_path, image_path):
+        return None
+
+    # Step 2: Get parent folder of the English PDF
+    eng_file_id = extract_drive_file_id(story["pdf_eng"])
+    if not eng_file_id:
+        log(f"    Could not extract file ID from English PDF URL.")
+        return None
+
+    folder_id = get_parent_folder_id(drive_service, eng_file_id)
+    if not folder_id:
+        log(f"    Could not determine parent folder, skipping upload.")
+        return None
+
+    # Step 3: Upload image to Drive
+    title = story.get("english_title", f"story_{idx}")
+    safe_title = re.sub(r'[^\w\s-]', '', title).strip().replace(' ', '_')
+    upload_filename = f"{safe_title}_cover.png"
+
+    uploaded_file_id = upload_image_to_drive(
+        drive_service, image_path, upload_filename, folder_id
+    )
+    if not uploaded_file_id:
+        return None
+
+    # Step 4: Make the uploaded image public
+    image_drive_url = f"https://drive.google.com/file/d/{uploaded_file_id}/view"
+    make_file_public(drive_service, image_drive_url)
+
+    # Step 5: Write URL to spreadsheet column E
+    if sheets_service:
+        write_image_url_to_sheet(sheets_service, story["row_num"], image_drive_url)
+
+    print(f"  >> Cover image uploaded: {image_drive_url}")
+    return image_drive_url
 
 
 def get_drive_service():
@@ -981,15 +1145,22 @@ def main():
         print("No stories with SW links found.")
         sys.exit(0)
 
-    # Step 2: Authenticate with OAuth if credentials are available (for Drive + Translation)
+    # Step 2: Authenticate with OAuth if credentials are available (for Drive + Translation + Sheets)
     drive_service = None
     oauth_creds = None
+    sheets_service = None
     if os.path.exists(TOKEN_PATH) or os.path.exists(CREDENTIALS_PATH):
         try:
             drive_service, oauth_creds = get_drive_service()
             log("Using OAuth for Drive API and Translation API.")
         except Exception as e:
             log(f"OAuth failed ({e}), falling back to public download and no translation.")
+        if oauth_creds:
+            try:
+                sheets_service = get_sheets_service(oauth_creds)
+                log("Sheets API service initialized for image URL updates.")
+            except Exception as e:
+                log(f"Sheets API initialization failed ({e}), image URLs will not be written to spreadsheet.")
 
     # Step 3: Download PDFs and extract descriptions + page 1 info
     start_time = time.time()
@@ -1007,6 +1178,7 @@ def main():
             eng_pdf_title = ""
             tam_pdf_title = ""
             translator = ""
+            image_url = None
 
             # English PDF
             if fetch_eng and story["pdf_eng"]:
@@ -1023,6 +1195,11 @@ def main():
 
                     eng_desc = extract_description_from_pdf(pdf_path)
                     print(f"  >> English description: {eng_desc}")
+
+                    # Extract and upload cover image
+                    image_url = process_cover_image(
+                        pdf_path, story, drive_service, sheets_service, tmpdir, idx
+                    )
                 else:
                     eng_desc = "[Download failed]"
                     print(f"  >> English: {eng_desc}")
@@ -1066,7 +1243,7 @@ def main():
                 "tamil_title": tam_pdf_title or story["tamil_title"],
                 "pdf_eng": story["pdf_eng"],
                 "pdf_tam": story["pdf_tam"],
-                "image": story["image"],
+                "image": image_url or story["image"],
                 "sw_link_eng": story["sw_link_eng"],
                 "sw_link_tam": story["sw_link_tam"],
                 "translators": translator or story["translators"],
