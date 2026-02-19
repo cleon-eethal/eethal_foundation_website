@@ -1,30 +1,17 @@
 #!/usr/bin/env python3
 """
-EETHAL Foundation - Simplified Story Addition Script
+EETHAL Foundation - Story Addition Script
+
+Downloads story data from the EETHAL Foundation Google Spreadsheet and creates
+Hugo content pages with front matter, cover images, and bilingual descriptions.
 
 Usage:
+    python add_story.py                    # process all stories (skip done)
+    python add_story.py --rows 5-10        # process spreadsheet rows 5 through 10
+    python add_story.py --rows 7           # process only spreadsheet row 7
+    python add_story.py --rows 7 --force   # re-process row 7 (ignore done, re-download image)
 
-1. Process stories from default Google Sheets (auto-downloads CSV):
-    python add_story.py --from-google-sheet
-
-   Or specify a different Google Sheets URL:
-    python add_story.py --from-google-sheet "https://docs.google.com/spreadsheets/d/SHEET_ID/edit"
-
-2. Process stories from local CSV file:
-    python add_story.py --from-csv ~/Downloads/stories.csv
-
-3. Add a single story via CLI arguments:
-    python add_story.py \
-        --english-title "My Big Family" \
-        --tamil-title "என்னுடைய பெரிய குடும்பம்" \
-        --english-pdf "https://drive.google.com/file/d/FILE_ID/view" \
-        --tamil-pdf "https://drive.google.com/file/d/FILE_ID/view" \
-        --translators "Name1, Name2" \
-        --english-description "A heartwarming story about..." \
-        --tamil-description "குடும்பத்தைப் பற்றிய ஒரு அன்பான கதை..." \
-        --cover-image ~/Downloads/cover.jpg
-
-CSV Format:
+CSV Format (from Google Sheet):
     Required columns: English Title, Tamil Title, English PDF, Tamil PDF,
                      Image, Translators, English Description, Tamil Description
     Image column should contain Google Drive share URLs
@@ -42,6 +29,9 @@ from datetime import date
 from pathlib import Path
 from typing import Optional
 
+
+# Project root (parent of the scripts/ directory this file lives in)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # Default Google Sheets URL
 DEFAULT_GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1zNhXLL_De8qCsk8OlORGQ_0tIk9Bw3aKi72HlSTEAOU/edit?usp=sharing"
@@ -155,7 +145,7 @@ def extract_gdrive_file_id(url: str) -> Optional[str]:
     return None
 
 
-def download_gdrive_image(gdrive_url: str, temp_dir: Path, slug: str, story_dir: Path) -> Path:
+def download_gdrive_image(gdrive_url: str, temp_dir: Path, slug: str, story_dir: Path, force: bool = False) -> Path:
     """
     Download cover image from Google Drive URL to local temp file (with caching).
 
@@ -164,6 +154,7 @@ def download_gdrive_image(gdrive_url: str, temp_dir: Path, slug: str, story_dir:
         temp_dir: Directory to save downloaded image
         slug: Story slug for filename
         story_dir: Story directory to check for existing cover image
+        force: If True, always re-download even if a cached image exists
 
     Returns:
         Path to downloaded or cached image file
@@ -171,8 +162,8 @@ def download_gdrive_image(gdrive_url: str, temp_dir: Path, slug: str, story_dir:
     Raises:
         Exception: If download fails or file ID extraction fails
     """
-    # Check if story directory exists and has cover image (caching)
-    if story_dir.exists():
+    # Check if story directory exists and has cover image (skip re-download)
+    if not force and story_dir.exists():
         for cover_file in story_dir.glob('cover.*'):
             print(f"  ✓ Using existing image: {cover_file.name}")
             return cover_file
@@ -247,7 +238,7 @@ def validate_csv_row(row: dict) -> tuple[bool, str]:
     return True, ""
 
 
-def process_csv_row(row: dict, row_number: int, temp_dir: Path) -> dict:
+def process_csv_row(row: dict, row_number: int, temp_dir: Path, force: bool = False) -> dict:
     """
     Process a single CSV row.
 
@@ -255,6 +246,7 @@ def process_csv_row(row: dict, row_number: int, temp_dir: Path) -> dict:
         row: Dictionary from CSV DictReader
         row_number: Row number for reporting
         temp_dir: Temporary directory for downloads
+        force: If True, re-download images even if cached
 
     Returns:
         Status dictionary with row, title, status, and optional error
@@ -282,11 +274,11 @@ def process_csv_row(row: dict, row_number: int, temp_dir: Path) -> dict:
 
         # Create slug and determine story directory
         slug = create_slug(english_title)
-        story_dir = Path('content/stories') / slug
+        story_dir = PROJECT_ROOT / 'content' / 'stories' / slug
 
         # Download cover image (with caching)
         try:
-            cover_image_path = download_gdrive_image(image_url, temp_dir, slug, story_dir)
+            cover_image_path = download_gdrive_image(image_url, temp_dir, slug, story_dir, force=force)
         except Exception as e:
             return {
                 'row': row_number,
@@ -335,12 +327,15 @@ def process_csv_row(row: dict, row_number: int, temp_dir: Path) -> dict:
         }
 
 
-def process_csv(csv_path: str) -> dict:
+def process_csv(csv_path: str, row_start: int = 0, row_end: int = 0, force: bool = False) -> dict:
     """
-    Main CSV processing orchestrator (processes ALL rows in CSV).
+    Main CSV processing orchestrator.
 
     Args:
         csv_path: Path to CSV file
+        row_start: First spreadsheet row to process (0 = no filter)
+        row_end: Last spreadsheet row to process (0 = no filter)
+        force: If True, re-download images and skip 'done' status filter
 
     Returns:
         Summary dictionary with total, successful, failed counts and details
@@ -363,14 +358,17 @@ def process_csv(csv_path: str) -> dict:
     # Create temp directory
     temp_dir = Path.home() / '.eethal_temp'
 
-    # Process each row
-    results = []
-    total_rows = len(rows)
+    # Build list of (row_number, row_dict) tuples, filtering by --rows if set
+    eligible = []
+    for idx, row in enumerate(rows, start=2):  # row 1 is header
+        if row_start and idx < row_start:
+            continue
+        if row_end and idx > row_end:
+            continue
 
-    for idx, row in enumerate(rows, start=2):  # Start at 2 because row 1 is header
-        # Skip rows with Status = 'done'
+        # Skip rows with Status = 'done' (unless force is set)
         status = row.get(CSV_COLUMNS['status'], '').strip().lower()
-        if status == 'done':
+        if status == 'done' and not force:
             continue
 
         # Skip empty rows
@@ -378,10 +376,23 @@ def process_csv(csv_path: str) -> dict:
         if not is_valid:
             continue
 
-        english_title = row.get(CSV_COLUMNS['english_title'], 'Unknown').strip()
-        print(f"[{len(results)+1}/{total_rows}] Creating: {english_title}")
+        eligible.append((idx, row))
 
-        result = process_csv_row(row, idx, temp_dir)
+    if not eligible:
+        range_desc = f" in rows {row_start}-{row_end}" if row_start else ""
+        print(f"No eligible stories found{range_desc}.")
+        return {'total': 0, 'successful': 0, 'failed': 0, 'details': []}
+
+    if row_start:
+        print(f"Processing spreadsheet rows {row_start}-{row_end} ({len(eligible)} eligible stories)\n")
+
+    # Process each row
+    results = []
+    for i, (idx, row) in enumerate(eligible, 1):
+        english_title = row.get(CSV_COLUMNS['english_title'], 'Unknown').strip()
+        print(f"[{i}/{len(eligible)}] Row {idx}: Creating: {english_title}")
+
+        result = process_csv_row(row, idx, temp_dir, force=force)
         results.append(result)
 
         if result['status'] == 'success':
@@ -404,9 +415,9 @@ def process_csv(csv_path: str) -> dict:
     print("=" * 50)
     print("CSV Processing Complete")
     print("=" * 50)
-    print(f"Total rows:     {total_rows}")
-    print(f"Successful:     {successful}")
-    print(f"Failed:         {failed}")
+    print(f"Total processed: {len(results)}")
+    print(f"Successful:      {successful}")
+    print(f"Failed:          {failed}")
 
     if failed > 0:
         print("\nFailed stories:")
@@ -415,7 +426,7 @@ def process_csv(csv_path: str) -> dict:
                 print(f"  - Row {r['row']}: \"{r['title']}\" - {r.get('error', 'Unknown error')}")
 
     return {
-        'total': total_rows,
+        'total': len(results),
         'successful': successful,
         'failed': failed,
         'details': results
@@ -451,6 +462,21 @@ def create_slug(title: str) -> str:
     return slug
 
 
+def _yaml_safe(value: str) -> str:
+    """Escape a string for use inside a YAML double-quoted value.
+
+    Replaces smart/curly quotes with single quotes, escapes any remaining
+    double quotes with a backslash, and strips HTML entities like &quot;.
+    """
+    # Replace smart/curly double quotes with single quotes
+    value = value.replace('\u201c', "'").replace('\u201d', "'")
+    # Replace HTML-encoded quotes
+    value = value.replace('&quot;', "'")
+    # Escape any remaining literal double quotes
+    value = value.replace('"', '\\"')
+    return value
+
+
 def create_story_frontmatter(
     english_title: str,
     tamil_title: str,
@@ -462,6 +488,12 @@ def create_story_frontmatter(
     cover_image_filename: str
 ) -> str:
     """Generate Hugo front matter for the story."""
+
+    # Sanitise text fields for YAML double-quoted strings
+    english_title = _yaml_safe(english_title)
+    tamil_title = _yaml_safe(tamil_title)
+    english_description = _yaml_safe(english_description)
+    tamil_description = _yaml_safe(tamil_description)
 
     # Convert PDF URLs to preview format
     english_pdf_preview = convert_gdrive_url_to_preview(english_pdf)
@@ -525,7 +557,7 @@ def create_story(
         slug = create_slug(english_title)
 
         # Create story directory
-        content_dir = Path('content/stories') / slug
+        content_dir = PROJECT_ROOT / 'content' / 'stories' / slug
         content_dir.mkdir(parents=True, exist_ok=True)
 
         print(f"  Creating story: {slug}")
@@ -576,152 +608,115 @@ def main():
         description='Add a new bilingual story to the EETHAL Foundation website'
     )
 
-    # CSV mode arguments
     parser.add_argument(
-        '--from-csv',
-        help='Path to CSV file (processes ALL rows in CSV)'
+        '--rows', metavar='RANGE',
+        help="process a specific range of spreadsheet rows, e.g. '5-10' or '7' "
+             "(row 1 is header, data rows start at 2)",
+    )
+    parser.add_argument(
+        '--force', action='store_true',
+        help="re-process stories even if marked 'done'; re-download images "
+             "instead of using cached copies",
     )
 
-    parser.add_argument(
-        '--from-google-sheet',
-        nargs='?',
-        const=DEFAULT_GOOGLE_SHEET_URL,
-        help=f'Google Sheets URL (defaults to configured spreadsheet if URL not provided)'
-    )
-
-    # Traditional CLI arguments
-    parser.add_argument(
-        '--english-title',
-        help='Story title in English'
-    )
-
-    parser.add_argument(
-        '--tamil-title',
-        help='Story title in Tamil'
-    )
-
-    parser.add_argument(
-        '--english-pdf',
-        help='Google Drive URL for English PDF'
-    )
-
-    parser.add_argument(
-        '--tamil-pdf',
-        help='Google Drive URL for Tamil PDF'
-    )
-
-    parser.add_argument(
-        '--translators',
-        help='Comma-separated list of translator names'
-    )
-
-    parser.add_argument(
-        '--english-description',
-        help='Brief description of the story in English'
-    )
-
-    parser.add_argument(
-        '--tamil-description',
-        help='Brief description of the story in Tamil'
-    )
-
-    parser.add_argument(
-        '--cover-image',
-        help='Path to cover image file'
-    )
+    # # CSV mode arguments (unused — all data comes from default Google Sheet)
+    # parser.add_argument(
+    #     '--from-csv',
+    #     help='Path to CSV file (processes ALL rows in CSV)'
+    # )
+    #
+    # parser.add_argument(
+    #     '--from-google-sheet',
+    #     nargs='?',
+    #     const=DEFAULT_GOOGLE_SHEET_URL,
+    #     help=f'Google Sheets URL (defaults to configured spreadsheet if URL not provided)'
+    # )
+    #
+    # # Traditional CLI arguments
+    # parser.add_argument(
+    #     '--english-title',
+    #     help='Story title in English'
+    # )
+    #
+    # parser.add_argument(
+    #     '--tamil-title',
+    #     help='Story title in Tamil'
+    # )
+    #
+    # parser.add_argument(
+    #     '--english-pdf',
+    #     help='Google Drive URL for English PDF'
+    # )
+    #
+    # parser.add_argument(
+    #     '--tamil-pdf',
+    #     help='Google Drive URL for Tamil PDF'
+    # )
+    #
+    # parser.add_argument(
+    #     '--translators',
+    #     help='Comma-separated list of translator names'
+    # )
+    #
+    # parser.add_argument(
+    #     '--english-description',
+    #     help='Brief description of the story in English'
+    # )
+    #
+    # parser.add_argument(
+    #     '--tamil-description',
+    #     help='Brief description of the story in Tamil'
+    # )
+    #
+    # parser.add_argument(
+    #     '--cover-image',
+    #     help='Path to cover image file'
+    # )
 
     args = parser.parse_args()
 
-    # Google Sheets Mode
-    if args.from_google_sheet:
-        # Download Google Sheet as CSV to temp file
-        temp_csv = Path.home() / '.eethal_temp' / 'downloaded_sheet.csv'
-        temp_csv.parent.mkdir(parents=True, exist_ok=True)
-
-        try:
-            download_google_sheet_as_csv(args.from_google_sheet, temp_csv)
-        except Exception as e:
-            print(f"Error: {e}")
+    # Parse --rows range
+    row_start = 0
+    row_end = 0
+    if args.rows:
+        match = re.match(r'^(\d+)(?:-(\d+))?$', args.rows)
+        if not match:
+            print(f"Error: invalid --rows format '{args.rows}'. Use e.g. '5-10' or '7'.",
+                  file=sys.stderr)
+            sys.exit(1)
+        row_start = int(match.group(1))
+        row_end = int(match.group(2)) if match.group(2) else row_start
+        if row_start < 2:
+            print("Error: row 1 is the header. Data rows start at 2.", file=sys.stderr)
+            sys.exit(1)
+        if row_end < row_start:
+            print(f"Error: invalid --rows range {row_start}-{row_end}.", file=sys.stderr)
             sys.exit(1)
 
-        result = process_csv(str(temp_csv))
+    # Always download from the default Google Sheet
+    temp_csv = Path.home() / '.eethal_temp' / 'downloaded_sheet.csv'
+    temp_csv.parent.mkdir(parents=True, exist_ok=True)
 
-        # Clean up temp CSV
-        try:
-            temp_csv.unlink()
-        except Exception:
-            pass
+    try:
+        download_google_sheet_as_csv(DEFAULT_GOOGLE_SHEET_URL, temp_csv)
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
 
-        # Print next steps
-        print("\nNext steps:")
-        print("1. Preview: hugo server -D")
-        print("2. Commit: git add content/stories/ && git commit -m 'Add stories from Google Sheet'")
+    result = process_csv(str(temp_csv), row_start=row_start, row_end=row_end, force=args.force)
 
-        sys.exit(0 if result['failed'] == 0 else 1)
+    # Clean up temp CSV
+    try:
+        temp_csv.unlink()
+    except Exception:
+        pass
 
-    # CSV Mode
-    elif args.from_csv:
-        csv_path = Path(args.from_csv).expanduser()
-        if not csv_path.exists():
-            print(f"Error: CSV file not found: {csv_path}")
-            sys.exit(1)
+    # Print next steps
+    print("\nNext steps:")
+    print("1. Preview: hugo server -D")
+    print("2. Commit: git add content/stories/ && git commit -m 'Add stories from Google Sheet'")
 
-        result = process_csv(str(csv_path))
-
-        # Print next steps
-        print("\nNext steps:")
-        print("1. Preview: hugo server -D")
-        print("2. Commit: git add content/stories/ && git commit -m 'Add stories from CSV'")
-
-        sys.exit(0 if result['failed'] == 0 else 1)
-
-    # Traditional CLI Mode
-    else:
-        # Validate required arguments for CLI mode
-        required_args = [
-            ('english_title', 'Story title in English'),
-            ('tamil_title', 'Story title in Tamil'),
-            ('english_pdf', 'Google Drive URL for English PDF'),
-            ('tamil_pdf', 'Google Drive URL for Tamil PDF'),
-            ('translators', 'Comma-separated list of translator names'),
-            ('english_description', 'Brief description in English'),
-            ('tamil_description', 'Brief description in Tamil'),
-            ('cover_image', 'Path to cover image file'),
-        ]
-
-        missing_args = []
-        for arg_name, arg_desc in required_args:
-            if not getattr(args, arg_name):
-                missing_args.append(f"--{arg_name.replace('_', '-')}: {arg_desc}")
-
-        if missing_args:
-            print("Error: Missing required arguments for CLI mode:\n")
-            for missing in missing_args:
-                print(f"  {missing}")
-            print("\nUse --from-csv <path> to process stories from CSV file instead.")
-            sys.exit(1)
-
-        success = create_story(
-            english_title=args.english_title,
-            tamil_title=args.tamil_title,
-            english_description=args.english_description,
-            tamil_description=args.tamil_description,
-            english_pdf=args.english_pdf,
-            tamil_pdf=args.tamil_pdf,
-            translators=args.translators,
-            cover_image_path=args.cover_image
-        )
-
-        if success:
-            slug = create_slug(args.english_title)
-            print("\n✅ Story created successfully!")
-            print(f"\nNext steps:")
-            print(f"1. Preview locally: hugo server -D")
-            print(f"2. View at: http://localhost:1313/stories/{slug}/")
-            print(f"3. Commit: git add content/stories/{slug} && git commit -m 'Add story: {args.english_title}'")
-            sys.exit(0)
-        else:
-            sys.exit(1)
+    sys.exit(0 if result['failed'] == 0 else 1)
 
 
 if __name__ == '__main__':

@@ -6,16 +6,17 @@ extracts titles and translator names from page 1, and descriptions from the
 last page of each PDF.
 
 Only processes rows that have StoryWeaver links in columns F and G.
-With --make-public, makes ALL Drive files in columns C, D, and E public.
+When using the Drive API (OAuth credentials available), automatically makes
+each file publicly viewable before downloading.
 
 Usage:
     source .venv/bin/activate
     python read_stories.py
     python read_stories.py -o descriptions.csv
+    python read_stories.py --rows 5-10            # process stories 5 through 10
+    python read_stories.py --rows 7               # process only story 7
     python read_stories.py --ocr gemini           # use Gemini OCR (recommended)
     python read_stories.py --ocr tesseract        # use Tesseract OCR (fallback)
-    python read_stories.py --make-public          # make Drive files public first
-
 Requirements (install via: pip install -r requirements.txt):
     - requests
     - PyMuPDF
@@ -44,7 +45,7 @@ Setup for Google Cloud Translation (recommended for Tamil descriptions):
     Tamil descriptions are now translated from English rather than extracted from
     Tamil PDFs, avoiding font encoding issues. Falls back to Tamil PDF if needed.
 
-Setup for --make-public:
+Setup for Google Drive API (auto-makes files public before downloading):
     1. Go to https://console.cloud.google.com/
     2. Create a project (or select existing)
     3. Enable the Google Drive API
@@ -95,7 +96,8 @@ HAS_OCR = HAS_TESSERACT or HAS_GEMINI
 # Translation API scope added for OAuth-based translation
 SCOPES = [
     "https://www.googleapis.com/auth/drive",
-    "https://www.googleapis.com/auth/cloud-translation"
+    "https://www.googleapis.com/auth/cloud-translation",
+    "https://www.googleapis.com/auth/spreadsheets",
 ]
 TOKEN_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "token.json")
 CREDENTIALS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "credentials.json")
@@ -137,11 +139,12 @@ def parse_args():
 examples:
   python read_stories.py                      # run with defaults (Gemini OCR)
   python read_stories.py -n 3                # only process first 3 stories
+  python read_stories.py --rows 5-10         # process stories 5 through 10
+  python read_stories.py --rows 7            # process only story 7
   python read_stories.py --ocr tesseract     # use Tesseract instead of Gemini
   python read_stories.py --lang eng          # English descriptions only
   python read_stories.py -o output.csv       # save results to a CSV file
   python read_stories.py -q                  # suppress verbose logs
-  python read_stories.py --make-public       # make Drive PDFs public, then extract
 """,
     )
     parser.add_argument(
@@ -149,9 +152,9 @@ examples:
         help="only process the first N stories (default: all)",
     )
     parser.add_argument(
-        "--make-public", action="store_true",
-        help="use Google Drive API to make ALL Drive files (columns C, D, E) publicly "
-             "viewable for ALL rows (requires credentials.json from Google Cloud Console)",
+        "--rows", metavar="RANGE",
+        help="process a specific range of stories, e.g. '5-10' or '7' "
+             "(1-based index among stories with SW links)",
     )
     parser.add_argument(
         "-o", "--output", metavar="FILE",
@@ -200,15 +203,22 @@ def _get_col(row, idx):
 
 
 def parse_all_rows(csv_text):
-    """Parse CSV and return ALL data rows (for --make-public)."""
+    """Parse CSV and return ALL data rows (for --make-public).
+
+    Each row includes a 'row_num' field with its spreadsheet row number
+    (row 1 = header, row 2 = first data row).
+    """
     reader = csv.reader(io.StringIO(csv_text))
-    next(reader)  # skip header row
+    next(reader)  # skip header row (row 1)
 
     rows = []
+    row_num = 1  # header is row 1
     for row in reader:
+        row_num += 1
         if not any(cell.strip() for cell in row):
             continue  # skip completely empty rows
         rows.append({
+            "row_num": row_num,
             "english_title": _get_col(row, COL_ENGLISH_TITLE),
             "tamil_title": _get_col(row, COL_TAMIL_TITLE),
             "pdf_eng": _get_col(row, COL_PDF_ENG),
@@ -237,6 +247,169 @@ def extract_drive_file_id(url):
     """Extract the Google Drive file ID from a Drive URL."""
     match = re.search(r"/d/([a-zA-Z0-9_-]+)", url)
     return match.group(1) if match else None
+
+
+def extract_cover_image(pdf_path, output_path):
+    """Extract the largest image from page 1 of a PDF and save it as PNG.
+
+    Selects the largest image by pixel area (the cover illustration, not logos).
+    Handles CMYK-to-RGB conversion for compatibility.
+
+    Returns True if an image was successfully extracted, False otherwise.
+    """
+    try:
+        doc = fitz.open(pdf_path)
+        page = doc[0]
+        images = page.get_images(full=True)
+
+        if not images:
+            log("    No images found on page 1.")
+            doc.close()
+            return False
+
+        # Find the largest image by pixel area
+        best_xref = None
+        best_area = 0
+        for img_info in images:
+            xref = img_info[0]
+            width = img_info[2]
+            height = img_info[3]
+            area = width * height
+            if area > best_area:
+                best_area = area
+                best_xref = xref
+
+        if best_xref is None:
+            doc.close()
+            return False
+
+        pix = fitz.Pixmap(doc, best_xref)
+
+        # Convert CMYK to RGB if needed
+        if pix.n - pix.alpha > 3:
+            pix = fitz.Pixmap(fitz.csRGB, pix)
+
+        pix.save(output_path)
+        doc.close()
+
+        log(f"    Extracted cover image ({best_area} pixels): {os.path.basename(output_path)}")
+        return True
+
+    except Exception as e:
+        log(f"    Failed to extract cover image: {e}")
+        return False
+
+
+def get_parent_folder_id(drive_service, file_id):
+    """Get the parent folder ID of a file on Google Drive."""
+    try:
+        file_meta = drive_service.files().get(
+            fileId=file_id, fields='parents'
+        ).execute()
+        parents = file_meta.get('parents', [])
+        return parents[0] if parents else None
+    except Exception as e:
+        log(f"    Could not get parent folder: {e}")
+        return None
+
+
+def upload_image_to_drive(drive_service, local_path, filename, folder_id):
+    """Upload an image file to a specific Google Drive folder.
+
+    Returns the Drive file ID of the uploaded file, or None on failure.
+    """
+    from googleapiclient.http import MediaFileUpload
+
+    try:
+        file_metadata = {
+            'name': filename,
+            'parents': [folder_id],
+        }
+        media = MediaFileUpload(local_path, mimetype='image/png', resumable=True)
+        uploaded = drive_service.files().create(
+            body=file_metadata, media_body=media, fields='id'
+        ).execute()
+        file_id = uploaded.get('id')
+        log(f"    Uploaded image to Drive: {filename} (ID: {file_id})")
+        return file_id
+    except Exception as e:
+        log(f"    Failed to upload image to Drive: {e}")
+        return None
+
+
+def get_sheets_service(creds):
+    """Build a Google Sheets API v4 service from OAuth credentials."""
+    from googleapiclient.discovery import build
+    return build('sheets', 'v4', credentials=creds)
+
+
+def write_image_url_to_sheet(sheets_service, row_num, image_url):
+    """Write an image URL to column E of the specified row in the Google Sheet."""
+    try:
+        sheets_service.spreadsheets().values().update(
+            spreadsheetId=SPREADSHEET_ID,
+            range=f"E{row_num}",
+            valueInputOption='RAW',
+            body={'values': [[image_url]]},
+        ).execute()
+        log(f"    Wrote image URL to E{row_num}")
+        return True
+    except Exception as e:
+        log(f"    Failed to write image URL to spreadsheet: {e}")
+        return False
+
+
+def process_cover_image(pdf_path, story, drive_service, sheets_service, tmpdir, idx):
+    """Extract cover image from PDF, upload to Drive, and update spreadsheet.
+
+    Skips if column E already has a value or if Drive API is unavailable.
+    Returns the public Drive URL of the uploaded image, or None.
+    """
+    if story["image"]:
+        log(f"    Image already set in spreadsheet, skipping extraction.")
+        return story["image"]
+
+    if not drive_service:
+        log(f"    Drive API not available, skipping image extraction.")
+        return None
+
+    # Step 1: Extract cover image from page 1
+    image_path = os.path.join(tmpdir, f"cover_{idx}.png")
+    if not extract_cover_image(pdf_path, image_path):
+        return None
+
+    # Step 2: Get parent folder of the English PDF
+    eng_file_id = extract_drive_file_id(story["pdf_eng"])
+    if not eng_file_id:
+        log(f"    Could not extract file ID from English PDF URL.")
+        return None
+
+    folder_id = get_parent_folder_id(drive_service, eng_file_id)
+    if not folder_id:
+        log(f"    Could not determine parent folder, skipping upload.")
+        return None
+
+    # Step 3: Upload image to Drive
+    title = story.get("english_title", f"story_{idx}")
+    safe_title = re.sub(r'[^\w\s-]', '', title).strip().replace(' ', '_')
+    upload_filename = f"{safe_title}_cover.png"
+
+    uploaded_file_id = upload_image_to_drive(
+        drive_service, image_path, upload_filename, folder_id
+    )
+    if not uploaded_file_id:
+        return None
+
+    # Step 4: Make the uploaded image public
+    image_drive_url = f"https://drive.google.com/file/d/{uploaded_file_id}/view"
+    make_file_public(drive_service, image_drive_url)
+
+    # Step 5: Write URL to spreadsheet column E
+    if sheets_service:
+        write_image_url_to_sheet(sheets_service, story["row_num"], image_drive_url)
+
+    print(f"  >> Cover image uploaded: {image_drive_url}")
+    return image_drive_url
 
 
 def get_drive_service():
@@ -282,42 +455,25 @@ def get_drive_service():
     return build("drive", "v3", credentials=creds), creds
 
 
-def make_files_public(drive_service, all_rows):
-    """Set 'anyone with link can view' permission on all Drive files in columns C, D, E."""
-    file_ids = set()
-    for row in all_rows:
-        for col in ("pdf_eng", "pdf_tam", "image"):
-            if row.get(col):
-                fid = extract_drive_file_id(row[col])
-                if fid:
-                    file_ids.add(fid)
-
-    log(f"Making {len(file_ids)} Drive files publicly viewable...")
-    success = 0
-    skipped = 0
-    failed = 0
-
-    for fid in file_ids:
-        try:
-            # Check existing permissions
-            perms = drive_service.permissions().list(fileId=fid).execute()
-            already_public = any(
-                p.get("type") == "anyone" for p in perms.get("permissions", [])
-            )
-            if already_public:
-                skipped += 1
-                continue
-
-            drive_service.permissions().create(
-                fileId=fid,
-                body={"type": "anyone", "role": "reader"},
-            ).execute()
-            success += 1
-        except Exception as e:
-            log(f"    Failed to update permissions for {fid}: {e}")
-            failed += 1
-
-    log(f"Done: {success} made public, {skipped} already public, {failed} failed.")
+def make_file_public(drive_service, drive_url):
+    """Ensure a single Drive file is publicly viewable. No-op if already public."""
+    file_id = extract_drive_file_id(drive_url)
+    if not file_id:
+        return
+    try:
+        perms = drive_service.permissions().list(fileId=file_id).execute()
+        already_public = any(
+            p.get("type") == "anyone" for p in perms.get("permissions", [])
+        )
+        if already_public:
+            return
+        drive_service.permissions().create(
+            fileId=file_id,
+            body={"type": "anyone", "role": "reader"},
+        ).execute()
+        log(f"    Made file {file_id} publicly viewable.")
+    except Exception as e:
+        log(f"    Could not set public permissions for {file_id}: {e}")
 
 
 def download_pdf(drive_url, dest_path, drive_service=None):
@@ -329,6 +485,7 @@ def download_pdf(drive_url, dest_path, drive_service=None):
 
     # Prefer Drive API (handles private files + avoids gdown confirmation issues)
     if drive_service:
+        make_file_public(drive_service, drive_url)
         try:
             from googleapiclient.http import MediaIoBaseDownload
             request = drive_service.files().get_media(fileId=file_id)
@@ -942,9 +1099,38 @@ def main():
         sys.exit(1)
 
     all_rows = parse_all_rows(csv_text)
-    stories = [r for r in all_rows if r["sw_link_eng"] or r["sw_link_tam"]]
+    max_row = all_rows[-1]["row_num"] if all_rows else 1
 
-    if args.limit > 0:
+    if args.rows:
+        # Parse range like "5-10" or single number like "7" (spreadsheet row numbers)
+        match = re.match(r'^(\d+)(?:-(\d+))?$', args.rows)
+        if not match:
+            print(f"Error: invalid --rows format '{args.rows}'. Use e.g. '5-10' or '7'.",
+                  file=sys.stderr)
+            sys.exit(1)
+        row_start = int(match.group(1))
+        row_end = int(match.group(2)) if match.group(2) else row_start
+        if row_start < 2:
+            print(f"Error: row 1 is the header. Data rows start at 2.", file=sys.stderr)
+            sys.exit(1)
+        if row_end < row_start:
+            print(f"Error: invalid --rows range {row_start}-{row_end}.", file=sys.stderr)
+            sys.exit(1)
+        if row_start > max_row:
+            print(f"Error: start row {row_start} exceeds last data row ({max_row}).",
+                  file=sys.stderr)
+            sys.exit(1)
+        # Filter to the requested spreadsheet row range, then to SW-link rows
+        rows_in_range = [r for r in all_rows if row_start <= r["row_num"] <= row_end]
+        stories = [r for r in rows_in_range if r["sw_link_eng"] or r["sw_link_tam"]]
+        if not stories:
+            print(f"No stories with SW links found in rows {row_start}-{row_end}.")
+            sys.exit(0)
+        log(f"Processing {len(stories)} stories from spreadsheet rows {row_start}-{row_end}.")
+    else:
+        stories = [r for r in all_rows if r["sw_link_eng"] or r["sw_link_tam"]]
+
+    if not args.rows and args.limit > 0:
         stories = stories[:args.limit]
         log(f"Limited to first {args.limit} stories.")
 
@@ -959,32 +1145,32 @@ def main():
         print("No stories with SW links found.")
         sys.exit(0)
 
-    # Step 2: Authenticate with OAuth if credentials are available (for Drive + Translation)
+    # Step 2: Authenticate with OAuth if credentials are available (for Drive + Translation + Sheets)
     drive_service = None
     oauth_creds = None
+    sheets_service = None
     if os.path.exists(TOKEN_PATH) or os.path.exists(CREDENTIALS_PATH):
         try:
             drive_service, oauth_creds = get_drive_service()
             log("Using OAuth for Drive API and Translation API.")
         except Exception as e:
             log(f"OAuth failed ({e}), falling back to public download and no translation.")
-
-    # Step 2b (optional): Make ALL Drive files public (columns C, D, E for ALL rows)
-    if args.make_public:
-        if not drive_service:
-            print("Error: --make-public requires credentials.json", file=sys.stderr)
-            sys.exit(1)
-        make_files_public(drive_service, all_rows)
+        if oauth_creds:
+            try:
+                sheets_service = get_sheets_service(oauth_creds)
+                log("Sheets API service initialized for image URL updates.")
+            except Exception as e:
+                log(f"Sheets API initialization failed ({e}), image URLs will not be written to spreadsheet.")
 
     # Step 3: Download PDFs and extract descriptions + page 1 info
     start_time = time.time()
     results = []
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        for i, story in enumerate(stories, 1):
+        for idx, story in enumerate(stories, 1):
             elapsed = time.time() - start_time
             print(f"\n{'='*70}")
-            print(f"[{i}/{len(stories)}] {story['english_title']} / {story['tamil_title']}  (elapsed: {elapsed:.0f}s)")
+            print(f"[{idx}/{len(stories)}] Row {story['row_num']}: {story['english_title']} / {story['tamil_title']}  (elapsed: {elapsed:.0f}s)")
             print(f"{'='*70}")
 
             eng_desc = ""
@@ -992,10 +1178,11 @@ def main():
             eng_pdf_title = ""
             tam_pdf_title = ""
             translator = ""
+            image_url = None
 
             # English PDF
             if fetch_eng and story["pdf_eng"]:
-                pdf_path = os.path.join(tmpdir, f"eng_{i}.pdf")
+                pdf_path = os.path.join(tmpdir, f"eng_{idx}.pdf")
                 log(f"    Downloading English PDF...")
                 if download_pdf(story["pdf_eng"], pdf_path, drive_service):
                     page1 = extract_page1_info(pdf_path)
@@ -1008,6 +1195,11 @@ def main():
 
                     eng_desc = extract_description_from_pdf(pdf_path)
                     print(f"  >> English description: {eng_desc}")
+
+                    # Extract and upload cover image
+                    image_url = process_cover_image(
+                        pdf_path, story, drive_service, sheets_service, tmpdir, idx
+                    )
                 else:
                     eng_desc = "[Download failed]"
                     print(f"  >> English: {eng_desc}")
@@ -1016,7 +1208,7 @@ def main():
 
             # Tamil: Always download PDF for title, but translate description from English
             if fetch_tam and story["pdf_tam"]:
-                pdf_path = os.path.join(tmpdir, f"tam_{i}.pdf")
+                pdf_path = os.path.join(tmpdir, f"tam_{idx}.pdf")
                 log(f"    Downloading Tamil PDF...")
                 if download_pdf(story["pdf_tam"], pdf_path, drive_service):
                     # Always extract Tamil title from PDF
@@ -1051,7 +1243,7 @@ def main():
                 "tamil_title": tam_pdf_title or story["tamil_title"],
                 "pdf_eng": story["pdf_eng"],
                 "pdf_tam": story["pdf_tam"],
-                "image": story["image"],
+                "image": image_url or story["image"],
                 "sw_link_eng": story["sw_link_eng"],
                 "sw_link_tam": story["sw_link_tam"],
                 "translators": translator or story["translators"],
