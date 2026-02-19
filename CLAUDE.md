@@ -195,6 +195,8 @@ Forms use Formspree for submission handling. Form action URLs containing `YOUR_F
 
 The `watch:css` script monitors changes and rebuilds automatically during development.
 
+**Important**: Stop the CSS watcher (`npm run watch:css`) before committing or deploying. The watcher produces unminified output, which will overwrite the minified `styles.css` created by `npm run build:css`, causing unexpected diffs in the working tree.
+
 ## Deployment
 
 The site is configured for deployment to Netlify or Vercel:
