@@ -48,14 +48,9 @@ canonifyURLs = true
     weight = 3
 
   [[menu.main]]
-    name = "Donate"
-    url = "/donate/"
-    weight = 4
-
-  [[menu.main]]
     name = "About"
     url = "/about/"
-    weight = 5
+    weight = 4
 
 # Young Translators submenu (displayed in dropdown)
 [[menu.youngTranslators]]
@@ -118,6 +113,11 @@ canonifyURLs = true
   name = "Network"
   url = "/network/"
   weight = 4
+
+[[menu.about]]
+  name = "Donate"
+  url = "/donate/"
+  weight = 5
 
 # Markdown rendering
 [markup]
