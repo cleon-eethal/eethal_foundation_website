@@ -1,0 +1,102 @@
+{{ define "main" }}
+<div class="py-12 md:py-16">
+  <div class="section-container">
+    <!-- Hero Section -->
+    <header class="mb-12 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-eethal-600 mb-4">
+        {{ .Title }}
+      </h1>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        {{ $count := len .Pages }}
+        {{ $count }} {{ if eq $count 1 }}story{{ else }}stories{{ end }} tagged
+      </p>
+    </header>
+
+    <!-- Stories Grid -->
+    {{ if .Pages }}
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {{ range .Pages.ByDate.Reverse }}
+          <article class="story-card">
+            <!-- Cover Image -->
+            {{ if .Params.coverImage }}
+              {{ $image := .Resources.GetMatch .Params.coverImage }}
+              {{ if $image }}
+                <div class="aspect-w-16 aspect-h-9 bg-gray-200">
+                  <img src="{{ $image.RelPermalink }}"
+                       alt="{{ .Title }}"
+                       class="object-cover w-full h-48" />
+                </div>
+              {{ else }}
+                <div class="h-48 bg-gradient-to-br from-eethal-600 to-eethal-800 flex items-center justify-center">
+                  <span class="text-white text-4xl">📖</span>
+                </div>
+              {{ end }}
+            {{ else }}
+              <div class="h-48 bg-gradient-to-br from-eethal-600 to-eethal-800 flex items-center justify-center">
+                <span class="text-white text-4xl">📖</span>
+              </div>
+            {{ end }}
+
+            <!-- Card Content -->
+            <div class="p-4">
+              <!-- Title - English and Tamil -->
+              <h2 class="text-2xl font-bold text-gray-900 mb-1">
+                <a href="{{ .Permalink }}" class="hover:text-eethal-600 transition-colors">
+                  {{ if .Params.titles.english }}
+                    {{ .Params.titles.english }}
+                  {{ else }}
+                    {{ .Title }}
+                  {{ end }}
+                </a>
+              </h2>
+
+              <!-- Tamil Title -->
+              {{ with .Params.titles.tamil }}
+                <p class="text-lg text-eethal-600 mb-2 font-medium">
+                  {{ . }}
+                </p>
+              {{ end }}
+
+              <!-- Translators -->
+              {{ with .Params.translators }}
+                <p class="text-sm text-gray-600 mb-3">
+                  <span class="font-medium">Translated by:</span> {{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="/translators/{{ $t | urlize }}/" class="text-eethal-600 hover:text-eethal-800 hover:underline">{{ $t }}</a>{{ end }}
+                </p>
+              {{ end }}
+
+              <!-- Tags -->
+              {{ with .Params.tags }}
+                <div class="flex flex-wrap gap-1 mb-3">
+                  {{ range . }}
+                    <a href="/tags/{{ . | urlize }}/" class="inline-block bg-eethal-100 text-eethal-600 hover:bg-eethal-200 text-xs font-medium px-2 py-0.5 rounded-full transition-colors">{{ . }}</a>
+                  {{ end }}
+                </div>
+              {{ end }}
+
+              <!-- Description -->
+              {{ with .Description }}
+                <p class="text-gray-600 mb-3">{{ . }}</p>
+              {{ end }}
+
+              <!-- Read Button -->
+              <a href="{{ .Permalink }}" class="btn-primary inline-block w-full text-center">
+                Read Story
+              </a>
+            </div>
+          </article>
+        {{ end }}
+      </div>
+    {{ end }}
+
+    <!-- Navigation Links -->
+    <div class="mt-12 pt-8 border-t border-gray-200 flex justify-between">
+      <a href="/stories/" class="text-eethal-600 hover:text-eethal-800 font-medium">
+        &larr; All Stories
+      </a>
+      <a href="/tags/" class="text-eethal-600 hover:text-eethal-800 font-medium">
+        All Tags &rarr;
+      </a>
+    </div>
+  </div>
+</div>
+{{ end }}

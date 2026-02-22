@@ -1,6 +1,6 @@
 ---
 title: "Eaglie's needle"
-date: 2026-02-18
+date: 2026-02-21
 
 descriptions:
   english: "Hen loses Eagle's family heirloom"
@@ -16,6 +16,10 @@ titles:
 
 translators:
     - "Sriram Balasubramanian"
+
+tags:
+    - "storyweaver"
+    - "verified"
 
 coverImage: "cover.png"
 draft: false

@@ -1,6 +1,6 @@
 ---
 title: "My dream in the drawer"
-date: 2026-02-18
+date: 2026-02-21
 
 descriptions:
   english: "I once had a dream, so small and light, I kept it in a box. I kept it hidden, safe and sound, In my drawer of socks"
@@ -12,10 +12,14 @@ pdfs:
 
 titles:
   english: "My dream in the drawer"
-  tamil: "அலமாரிய\ எV கன"
+  tamil: "அலமாரியில் என் கனவு"
 
 translators:
     - "Aakash M"
+
+tags:
+    - "storyweaver"
+    - "verified"
 
 coverImage: "cover.png"
 draft: false

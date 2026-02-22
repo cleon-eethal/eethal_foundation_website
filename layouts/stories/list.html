@@ -46,7 +46,7 @@
             {{ end }}
 
             <!-- Card Content -->
-            <div class="p-6">
+            <div class="p-4">
               <!-- Title - English and Tamil -->
               <h2 class="text-2xl font-bold text-gray-900 mb-1">
                 <a href="{{ .Permalink }}" class="hover:text-eethal-600 transition-colors">
@@ -59,36 +59,46 @@
               </h2>
 
               <!-- Tamil Title -->
-              {{ with .Params.titles.tamil }}
-                <p class="text-lg text-eethal-600 mb-3 font-medium">
-                  {{ . }}
+              {{ if .Params.titles.tamil }}
+                <p class="text-lg text-eethal-600 mb-2 font-medium">
+                  <a href="{{ .Permalink }}" class="hover:text-eethal-800 transition-colors">
+                    {{ .Params.titles.tamil }}
+                  </a>
                 </p>
               {{ end }}
 
               <!-- Translators -->
               {{ with .Params.translators }}
-                <p class="text-sm text-gray-600 mb-4">
-                  <span class="font-medium">Translated by:</span> {{ delimit . ", " }}
+                <p class="text-sm text-gray-600 mb-3">
+                  <span class="font-medium">Translated by:</span> {{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="/translators/{{ $t | urlize }}/" class="text-eethal-600 hover:text-eethal-800 hover:underline">{{ $t }}</a>{{ end }}
                 </p>
+              {{ end }}
+
+              <!-- Tags -->
+              {{ with .Params.tags }}
+                <div class="flex flex-wrap gap-1 mb-3">
+                  {{ range . }}
+                    <a href="/tags/{{ . | urlize }}/" class="inline-block bg-eethal-100 text-eethal-600 hover:bg-eethal-200 text-xs font-medium px-2 py-0.5 rounded-full transition-colors">{{ . }}</a>
+                  {{ end }}
+                </div>
               {{ end }}
 
               <!-- Description -->
               {{ with .Description }}
-                <p class="text-gray-600 mb-4">{{ . }}</p>
+                <p class="text-gray-600 mb-3">{{ . }}</p>
               {{ end }}
 
               <!-- Metadata -->
-              <div class="flex flex-wrap gap-2 mb-4">
-                <!-- Age Group Badge -->
-                {{ with .Params.metadata.ageGroup }}
-                  <span class="age-badge">{{ . }}</span>
-                {{ end }}
-
-                <!-- Genre Badge -->
-                {{ with .Params.metadata.genre }}
-                  <span class="age-badge">{{ . }}</span>
-                {{ end }}
-              </div>
+              {{ if or .Params.metadata.ageGroup .Params.metadata.genre }}
+                <div class="flex flex-wrap gap-2 mb-3">
+                  {{ with .Params.metadata.ageGroup }}
+                    <span class="age-badge">{{ . }}</span>
+                  {{ end }}
+                  {{ with .Params.metadata.genre }}
+                    <span class="age-badge">{{ . }}</span>
+                  {{ end }}
+                </div>
+              {{ end }}
 
               <!-- Read Button -->
               <a href="{{ .Permalink }}" class="btn-primary inline-block w-full text-center">

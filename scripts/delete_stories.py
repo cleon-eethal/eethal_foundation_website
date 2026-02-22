@@ -4,13 +4,13 @@ EETHAL Foundation - Story Deletion Script
 
 Usage:
     # List all stories
-    python delete_story.py --list
+    python delete_stories.py --list
 
     # Delete a story
-    python delete_story.py portrai-of-life
+    python delete_stories.py portrai-of-life
 
     # Delete without confirmation
-    python delete_story.py portrai-of-life --force
+    python delete_stories.py portrai-of-life --force
 """
 
 import argparse
@@ -146,7 +146,7 @@ def main():
             print(f"  - {story:30} ({title})")
 
         if not args.slug:
-            print("\nUsage: python delete_story.py <slug>")
+            print("\nUsage: python delete_stories.py <slug>")
             sys.exit(0)
 
     # Delete mode

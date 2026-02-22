@@ -42,32 +42,26 @@ hugo --minify
 npm run build:css && hugo --minify
 ```
 
-### Story Management
+### Publishing to Production
 
-**IMPORTANT**: Use the `publish_stories.sh` script for all story publishing and deployment tasks:
+Use `publish.sh` to build, commit, and deploy to production:
 
 ```bash
-# Review and commit new/changed stories (interactive)
-./scripts/publish_stories.sh
+# Full publish (interactive)
+./scripts/publish.sh
 
-# Commit and push stories to dev branch
-./scripts/publish_stories.sh --push
+# Preview what would be published
+./scripts/publish.sh --dry-run
 
-# Deploy to production (merge dev to master and push)
-./scripts/publish_stories.sh --deploy
-
-# Preview what would be committed without making changes
-./scripts/publish_stories.sh --dry-run
+# Publish with a custom commit message
+./scripts/publish.sh -m "Add new stories"
 ```
 
 The script handles:
-- Auto-detecting new and modified stories in `content/stories/`
-- Generating appropriate commit messages
-- Managing CSS watcher conflicts during git operations
-- Safe deployment workflow from dev to master
-- Building and minifying CSS for production
-
-**Always use this script instead of manual git commands for story-related changes.**
+- Stopping CSS watcher and building minified CSS
+- Committing any pending changes (interactive)
+- Pushing dev, merging to master, pushing master (triggers Vercel deploy)
+- Switching back to dev branch
 
 ### Other Commands
 ```bash

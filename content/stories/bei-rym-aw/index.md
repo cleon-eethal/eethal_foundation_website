@@ -1,6 +1,6 @@
 ---
 title: "Bei Rym-aw"
-date: 2026-02-18
+date: 2026-02-21
 
 descriptions:
   english: "The Chad Sukra festival is here! Waka and her squirrel friend Kiru are excited to be part of the celebrations. But, after a fateful encounter with Bei Rym-aw herself, they start to realise a heartbreaking truth–humans are harming the environment. What will the two do to make the festival a symbol of hope again?"
@@ -16,6 +16,10 @@ titles:
 
 translators:
     - "Sriram Balasubramanian"
+
+tags:
+    - "storyweaver"
+    - "verified"
 
 coverImage: "cover.png"
 draft: false

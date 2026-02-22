@@ -1,0 +1,37 @@
+{{ define "main" }}
+<div class="py-12 md:py-16">
+  <div class="section-container">
+    <!-- Hero Section -->
+    <header class="mb-12 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-eethal-600 mb-4">
+        Our Translators
+      </h1>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Meet the talented translators behind our bilingual stories.
+      </p>
+    </header>
+
+    <!-- Translators Grid -->
+    {{ if .Pages }}
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {{ range .Pages.ByTitle }}
+          <a href="{{ .Permalink }}" class="block bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300">
+            <h2 class="text-xl font-bold text-eethal-600 mb-2">{{ .Title }}</h2>
+            <p class="text-gray-600">
+              {{ $count := len .Pages }}
+              {{ $count }} {{ if eq $count 1 }}story{{ else }}stories{{ end }} translated
+            </p>
+          </a>
+        {{ end }}
+      </div>
+    {{ end }}
+
+    <!-- Back Link -->
+    <div class="mt-12 pt-8 border-t border-gray-200">
+      <a href="/stories/" class="text-eethal-600 hover:text-eethal-800 font-medium">
+        &larr; Back to All Stories
+      </a>
+    </div>
+  </div>
+</div>
+{{ end }}

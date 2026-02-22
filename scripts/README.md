@@ -6,14 +6,14 @@ This folder contains Python scripts for managing EETHAL Foundation story data, i
 
 | Script | Purpose |
 |--------|---------|
-| `read_stories.py` | Extract titles, translators, and descriptions from Tamil/English story PDFs |
-| `add_story.py` | Add new stories to the website |
-| `delete_story.py` | Remove stories from the website |
-| `publish_stories.sh` | Commit and push story changes to git |
+| `extract_stories.py` | Extract titles, translators, and descriptions from Tamil/English story PDFs |
+| `add_stories.py` | Add new stories to the website |
+| `delete_stories.py` | Remove stories from the website |
+| `publish.sh` | Build, commit, and deploy to production |
 
 ---
 
-## `read_stories.py` - Story Metadata Extraction
+## `extract_stories.py` - Story Metadata Extraction
 
 Automatically extracts story metadata from PDFs hosted on Google Drive and outputs to CSV format.
 
@@ -61,16 +61,16 @@ source ~/.zshrc
 
 ```bash
 # Extract all stories with Gemini OCR (default)
-python scripts/read_stories.py -o stories.csv
+python scripts/extract_stories.py -o stories.csv
 
 # Process first 10 stories only
-python scripts/read_stories.py -n 10 -o test.csv
+python scripts/extract_stories.py -n 10 -o test.csv
 
 # Extract Tamil descriptions only (faster)
-python scripts/read_stories.py --lang tam -o tamil_stories.csv
+python scripts/extract_stories.py --lang tam -o tamil_stories.csv
 
 # Use Tesseract instead of Gemini
-python scripts/read_stories.py --ocr tesseract -o stories.csv
+python scripts/extract_stories.py --ocr tesseract -o stories.csv
 ```
 
 ### Command-Line Options
@@ -88,16 +88,16 @@ python scripts/read_stories.py --ocr tesseract -o stories.csv
 
 ```bash
 # Test with 5 stories
-python scripts/read_stories.py -n 5 -o test_output.csv
+python scripts/extract_stories.py -n 5 -o test_output.csv
 
 # Extract only English descriptions
-python scripts/read_stories.py --lang eng -o english_only.csv
+python scripts/extract_stories.py --lang eng -o english_only.csv
 
 # Quiet mode with Tamil only
-python scripts/read_stories.py --lang tam -q -o tamil_quiet.csv
+python scripts/extract_stories.py --lang tam -q -o tamil_quiet.csv
 
 # Batch processing for paid Gemini tier
-python scripts/read_stories.py -o all_stories.csv
+python scripts/extract_stories.py -o all_stories.csv
 ```
 
 ### OCR Backends
@@ -215,14 +215,14 @@ Lazy Anansi,சோம்பேறி அனன்சி,https://drive.google.com
 
 ```bash
 # Solution 1: Process in smaller batches
-python scripts/read_stories.py -n 10 -o batch1.csv  # Day 1
-python scripts/read_stories.py -n 10 -o batch2.csv  # Day 2 (skip first 10 manually)
+python scripts/extract_stories.py -n 10 -o batch1.csv  # Day 1
+python scripts/extract_stories.py -n 10 -o batch2.csv  # Day 2 (skip first 10 manually)
 
 # Solution 2: Upgrade to paid tier (< $1 for full collection)
 # Visit: https://aistudio.google.com/app/apikey
 
 # Solution 3: Use Tesseract (lower quality)
-python scripts/read_stories.py --ocr tesseract -o stories.csv
+python scripts/extract_stories.py --ocr tesseract -o stories.csv
 ```
 
 #### Issue: "GEMINI_API_KEY not set"
@@ -274,7 +274,7 @@ If PDFs are private, you can make them public using the Drive API:
 
 **Usage:**
 ```bash
-python scripts/read_stories.py --make-public
+python scripts/extract_stories.py --make-public
 ```
 
 This sets "anyone with link can view" permission on all Drive files in the spreadsheet.
@@ -285,7 +285,7 @@ The script processes stories sequentially. If interrupted, use `-n` to skip alre
 
 ```bash
 # First run (interrupted after 15 stories)
-python scripts/read_stories.py -o stories.csv  # Interrupted!
+python scripts/extract_stories.py -o stories.csv  # Interrupted!
 
 # Continue from story 16 (manually edit spreadsheet or use different approach)
 # Note: Built-in resume feature not yet implemented
@@ -293,7 +293,7 @@ python scripts/read_stories.py -o stories.csv  # Interrupted!
 
 ---
 
-## `add_story.py` - Add New Stories
+## `add_stories.py` - Add New Stories
 
 Automates the process of adding bilingual stories to the Hugo website. Supports three modes: Google Sheets, CSV file, or individual CLI arguments.
 
@@ -312,10 +312,10 @@ Automates the process of adding bilingual stories to the Hugo website. Supports 
 
 ```bash
 # Use default configured Google Sheet
-python scripts/add_story.py --from-google-sheet
+python scripts/add_stories.py --from-google-sheet
 
 # Or specify a different Google Sheet
-python scripts/add_story.py --from-google-sheet "https://docs.google.com/spreadsheets/d/SHEET_ID/edit"
+python scripts/add_stories.py --from-google-sheet "https://docs.google.com/spreadsheets/d/SHEET_ID/edit"
 ```
 
 **Requirements:**
@@ -325,7 +325,7 @@ python scripts/add_story.py --from-google-sheet "https://docs.google.com/spreads
 #### 2. From Local CSV File
 
 ```bash
-python scripts/add_story.py --from-csv ~/Downloads/stories.csv
+python scripts/add_stories.py --from-csv ~/Downloads/stories.csv
 ```
 
 **CSV Format:**
@@ -343,7 +343,7 @@ Must include these columns:
 #### 3. Single Story via CLI
 
 ```bash
-python scripts/add_story.py \
+python scripts/add_stories.py \
     --english-title "My Big Family" \
     --tamil-title "என்னுடைய பெரிய குடும்பம்" \
     --english-pdf "https://drive.google.com/file/d/FILE_ID/view" \
@@ -405,7 +405,7 @@ Failed stories are reported at the end with specific error messages.
 
 ---
 
-## `delete_story.py` - Remove Stories
+## `delete_stories.py` - Remove Stories
 
 Safely removes story directories from the website with confirmation prompts.
 
@@ -421,7 +421,7 @@ Safely removes story directories from the website with confirmation prompts.
 #### List All Stories
 
 ```bash
-python scripts/delete_story.py --list
+python scripts/delete_stories.py --list
 ```
 
 **Output:**
@@ -436,7 +436,7 @@ Available stories (14):
 #### Delete a Story
 
 ```bash
-python scripts/delete_story.py my-big-family
+python scripts/delete_stories.py my-big-family
 ```
 
 **Interactive Prompt:**
@@ -460,7 +460,7 @@ Next steps:
 #### Force Delete (No Confirmation)
 
 ```bash
-python scripts/delete_story.py my-big-family --force
+python scripts/delete_stories.py my-big-family --force
 ```
 
 ### Parameters
@@ -485,7 +485,7 @@ Story slugs are the directory names in `content/stories/`. To find them:
 
 1. **Using the script:**
    ```bash
-   python scripts/delete_story.py --list
+   python scripts/delete_stories.py --list
    ```
 
 2. **Manually:**
@@ -498,182 +498,68 @@ Story slugs are the directory names in `content/stories/`. To find them:
 
 ---
 
-## `publish_stories.sh` - Commit and Push Stories
+## `publish.sh` - Publish to Production
 
-Automates git operations for publishing new or modified stories. Provides a safe, interactive workflow with previews and confirmations.
+Builds CSS, commits pending changes, pushes dev, merges to master, and triggers Vercel deployment.
 
 ### Features
 
-- ✅ **Smart Detection**: Automatically finds new and modified stories
-- ✅ **Interactive Preview**: Shows exactly what will be committed
-- ✅ **Safe Confirmations**: Asks before making changes
+- ✅ **Full Pipeline**: CSS build → commit → push dev → merge to master → push master
+- ✅ **Interactive Prompts**: Asks for commit message and shows pending changes
 - ✅ **Dry Run Mode**: Preview without making any changes
-- ✅ **Auto-Generated Messages**: Creates descriptive commit messages
-- ✅ **Color-Coded Output**: Easy to read status messages
+- ✅ **CSS Watcher Handling**: Automatically stops watcher and reminds you to restart
+- ✅ **Safety Checks**: Verifies git repo, branch, and shows commits before deploying
 
 ### Usage
 
-#### Review and Commit Stories
-
 ```bash
-./scripts/publish_stories.sh
-```
+# Full publish (interactive)
+./scripts/publish.sh
 
-**Interactive Flow:**
-```
-Checking for story changes...
+# Preview what would be published
+./scripts/publish.sh --dry-run
 
-Current branch: dev
-
-Changes in content/stories/:
-  ?? content/stories/lazy-anansi/
-  ?? content/stories/happy-akai/
-  M  content/stories/my-big-family/index.md
-
-Summary:
-  New stories: 2
-  Modified stories: 1
-
-Do you want to commit these changes? (yes/no): yes
-
-Staging changes...
-Creating commit...
-✓ Committed: Add 2 new and update 1 existing stories
-
-To push these changes, run:
-  git push origin dev
-
-Or use:
-  ./scripts/publish_stories.sh --push
-```
-
-#### Commit and Push in One Step
-
-```bash
-./scripts/publish_stories.sh --push
-```
-
-Commits the changes AND pushes to the remote repository (origin/current-branch).
-
-#### Dry Run (Preview Only)
-
-```bash
-./scripts/publish_stories.sh --dry-run
-```
-
-Shows what would be committed without making any changes to git.
-
-**Example Output:**
-```
-Checking for story changes...
-
-Changes in content/stories/:
-  ?? content/stories/lazy-anansi/index.md
-  ?? content/stories/lazy-anansi/cover.jpg
-
-Summary:
-  New stories: 1
-  Modified stories: 0
-
-Dry run mode - showing what would be committed:
-
- content/stories/lazy-anansi/cover.jpg  | Bin 0 -> 45678 bytes
- content/stories/lazy-anansi/index.md   |  18 ++++++++++++++++++
- 2 files changed, 18 insertions(+)
-
-No changes made (dry run)
+# Publish with a custom commit message
+./scripts/publish.sh -m "Add new stories"
 ```
 
 ### Options
 
 | Option | Description |
 |--------|-------------|
-| _(no options)_ | Interactive mode: review and commit |
-| `--push` | Commit and push to remote |
-| `--dry-run` | Preview changes without committing |
+| _(no options)_ | Interactive mode: build, commit, and deploy |
+| `--dry-run` | Preview changes without making any |
+| `-m "message"` | Use a custom commit message |
 | `--help`, `-h` | Show help message |
 
 ### How It Works
 
-1. **Detects Changes**: Scans `content/stories/` for new and modified files
-2. **Shows Summary**: Counts new vs. modified stories
-3. **Asks Confirmation**: Interactive prompt (unless --dry-run)
-4. **Stages Changes**: Runs `git add content/stories/`
-5. **Creates Commit**: Auto-generates descriptive commit message
-6. **Optionally Pushes**: Pushes to remote if `--push` flag is used
-
-### Commit Message Format
-
-The script automatically generates commit messages based on changes:
-
-- **New stories only**: `Add 3 new stories`
-- **Modified stories only**: `Update 2 stories`
-- **Both**: `Add 3 new and update 2 existing stories`
-
-All commits include:
-```
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
-```
-
-### Safety Features
-
-- **Branch Aware**: Shows current branch before committing
-- **Confirmation Required**: Won't commit without explicit "yes"
-- **Clear Preview**: Shows all changes before committing
-- **Dry Run Option**: Test without making changes
-- **Error Handling**: Exits on errors (set -e)
+1. **Stops CSS watcher** if running
+2. **Builds minified CSS** (`npm run build:css`)
+3. **Commits pending changes** (interactive prompt for message)
+4. **Pushes dev** to origin
+5. **Merges dev into master** and pushes (triggers Vercel deploy)
+6. **Switches back to dev**
 
 ### Common Workflows
 
-#### Workflow 1: Add Stories from CSV, Then Publish
+#### Add Stories from CSV, Then Publish
 
 ```bash
 # Step 1: Add stories from CSV
-python scripts/add_story.py --from-csv stories.csv
+python scripts/add_stories.py --from-csv stories.csv
 
-# Step 2: Review what was added (dry run)
-./scripts/publish_stories.sh --dry-run
+# Step 2: Preview what would be published
+./scripts/publish.sh --dry-run
 
-# Step 3: Commit and push
-./scripts/publish_stories.sh --push
+# Step 3: Publish to production
+./scripts/publish.sh
 ```
 
-#### Workflow 2: Update Existing Story, Then Commit
+#### Quick Publish with Message
 
 ```bash
-# Step 1: Edit story manually
-vim content/stories/my-story/index.md
-
-# Step 2: Review changes
-./scripts/publish_stories.sh --dry-run
-
-# Step 3: Commit (no push yet)
-./scripts/publish_stories.sh
-
-# Step 4: Push when ready
-git push origin dev
-```
-
-### Troubleshooting
-
-#### "content/stories/ directory not found"
-You're not in the repository root. Run:
-```bash
-cd /path/to/eethal_foundation_website
-./scripts/publish_stories.sh
-```
-
-#### "No changes detected"
-All stories are already committed. To see what's committed:
-```bash
-git log --oneline -5
-```
-
-#### Want to commit only specific stories?
-Use git directly:
-```bash
-git add content/stories/specific-story/
-git commit -m "Add story: Specific Story"
+./scripts/publish.sh -m "Add 3 new stories"
 ```
 
 ---
@@ -723,5 +609,5 @@ These scripts are part of the EETHAL Foundation website project.
 
 For issues or questions:
 1. Check the troubleshooting section above
-2. Review the script's inline help: `python scripts/read_stories.py --help`
+2. Review the script's inline help: `python scripts/extract_stories.py --help`
 3. Contact the EETHAL Foundation tech team

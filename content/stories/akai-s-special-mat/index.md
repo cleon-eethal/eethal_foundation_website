@@ -1,6 +1,6 @@
 ---
 title: "Akai's special mat"
-date: 2026-02-18
+date: 2026-02-21
 
 descriptions:
   english: "Akai has a special mat given to her by her aunt. One day she gets lost. What happens next?"
@@ -16,6 +16,10 @@ titles:
 
 translators:
     - "Sarvesh Thirumalai"
+
+tags:
+    - "storyweaver"
+    - "verified"
 
 coverImage: "cover.png"
 draft: false

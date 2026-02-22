@@ -1,6 +1,6 @@
 ---
 title: "Portrait of Life"
-date: 2026-02-14
+date: 2026-02-21
 
 descriptions:
   english: "Portrait of Life"
@@ -20,6 +20,9 @@ translators:
     - "Saravanan Somu"
     - "Lavanya Perumalsamy"
     - "Priya Ramki"
+
+tags:
+    - "tamil2english"
 
 coverImage: "cover.jpeg"
 draft: false

@@ -22,20 +22,28 @@
 
   <!-- Card Content -->
   <div class="p-6">
-    <h3 class="text-xl font-bold text-gray-900 mb-2">
+    <h3 class="text-xl font-bold text-gray-900 mb-1">
       <a href="{{ .Permalink }}" class="hover:text-eethal-600 transition-colors">
         {{ .Title }}
       </a>
     </h3>
 
     {{ with .Params.descriptions.english }}
-      <p class="text-gray-600 mb-4 line-clamp-2">{{ . }}</p>
+      <p class="text-gray-600 mb-3 line-clamp-2">{{ . }}</p>
     {{ end }}
 
     {{ with .Params.translators }}
-      <p class="text-sm text-gray-500 mb-4">
-        <span class="font-medium">By:</span> {{ delimit . ", " }}
+      <p class="text-sm text-gray-500 mb-3">
+        <span class="font-medium">By:</span> {{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="/translators/{{ $t | urlize }}/" class="text-eethal-600 hover:text-eethal-800 hover:underline">{{ $t }}</a>{{ end }}
       </p>
+    {{ end }}
+
+    {{ with .Params.tags }}
+      <div class="flex flex-wrap gap-1 mb-3">
+        {{ range . }}
+          <a href="/tags/{{ . | urlize }}/" class="inline-block bg-eethal-100 text-eethal-600 hover:bg-eethal-200 text-xs font-medium px-2 py-0.5 rounded-full transition-colors">{{ . }}</a>
+        {{ end }}
+      </div>
     {{ end }}
 
     <a href="{{ .Permalink }}" class="btn-primary inline-block w-full text-center">
