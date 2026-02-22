@@ -34,7 +34,7 @@
 
     {{ with .Params.translators }}
       <p class="text-sm text-gray-500 mb-4">
-        <span class="font-medium">By:</span> {{ delimit . ", " }}
+        <span class="font-medium">By:</span> {{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="/translators/{{ $t | urlize }}/" class="text-eethal-600 hover:text-eethal-800 hover:underline">{{ $t }}</a>{{ end }}
       </p>
     {{ end }}
 

@@ -5,6 +5,10 @@ relativeURLs = false
 canonifyURLs = true
 # No theme - using custom layouts
 
+# Taxonomies
+[taxonomies]
+  translator = "translators"
+
 # Pagination
 [pagination]
   pagerSize = 10

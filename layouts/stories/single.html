@@ -33,7 +33,7 @@
 
       {{ with .Params.translators }}
         <p class="text-lg text-gray-500 text-left mt-2" style="font-style: italic;">
-          Translated by: {{ delimit . ", " }}
+          Translated by: {{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="/translators/{{ $t | urlize }}/" class="text-eethal-600 hover:text-eethal-800 hover:underline">{{ $t }}</a>{{ end }}
         </p>
       {{ end }}
     </header>
