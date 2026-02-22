@@ -6,10 +6,10 @@ Downloads story data from the EETHAL Foundation Google Spreadsheet and creates
 Hugo content pages with front matter, cover images, and bilingual descriptions.
 
 Usage:
-    python add_story.py                    # process all stories (skip done)
-    python add_story.py --rows 5-10        # process spreadsheet rows 5 through 10
-    python add_story.py --rows 7           # process only spreadsheet row 7
-    python add_story.py --rows 7 --force   # re-process row 7 (ignore done, re-download image)
+    python add_stories.py                    # process all stories (skip done)
+    python add_stories.py --rows 5-10        # process spreadsheet rows 5 through 10
+    python add_stories.py --rows 7           # process only spreadsheet row 7
+    python add_stories.py --rows 7 --force   # re-process row 7 (ignore done, re-download image)
 
 CSV Format (from Google Sheet):
     Required columns: English Title, Tamil Title, English PDF, Tamil PDF,

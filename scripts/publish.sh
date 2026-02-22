@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-# EETHAL Foundation - Deploy to Production
+# EETHAL Foundation - Publish to Production
 #
 # Builds CSS, commits pending changes, pushes dev, merges to master, and deploys.
 #
 # Usage:
-#   ./scripts/deploy.sh                  # Full deploy (interactive)
-#   ./scripts/deploy.sh --dry-run        # Preview what would be deployed
-#   ./scripts/deploy.sh -m "message"     # Deploy with a custom commit message
+#   ./scripts/publish.sh                  # Full publish (interactive)
+#   ./scripts/publish.sh --dry-run        # Preview what would be published
+#   ./scripts/publish.sh -m "message"     # Publish with a custom commit message
 #
 
 set -e
@@ -38,7 +38,7 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         --help|-h)
-            echo "Usage: ./scripts/deploy.sh [OPTIONS]"
+            echo "Usage: ./scripts/publish.sh [OPTIONS]"
             echo ""
             echo "Options:"
             echo "  --dry-run        Preview what would be deployed without making changes"
@@ -77,7 +77,7 @@ if [ "$CURRENT_BRANCH" != "dev" ]; then
 fi
 
 echo -e "${BOLD}${BLUE}======================================${NC}"
-echo -e "${BOLD}${BLUE}  EETHAL Foundation - Deploy${NC}"
+echo -e "${BOLD}${BLUE}  EETHAL Foundation - Publish${NC}"
 echo -e "${BOLD}${BLUE}======================================${NC}"
 echo ""
 
@@ -192,7 +192,7 @@ if [ "$CSS_WAS_RUNNING" = true ]; then
 fi
 
 echo -e "${BOLD}${GREEN}======================================${NC}"
-echo -e "${BOLD}${GREEN}  ✓ Deployed to production!${NC}"
+echo -e "${BOLD}${GREEN}  ✓ Published to production!${NC}"
 echo -e "${BOLD}${GREEN}======================================${NC}"
 echo ""
 echo "Vercel will build and publish automatically."

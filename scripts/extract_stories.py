@@ -11,12 +11,12 @@ each file publicly viewable before downloading.
 
 Usage:
     source .venv/bin/activate
-    python read_stories.py
-    python read_stories.py -o descriptions.csv
-    python read_stories.py --rows 5-10            # process stories 5 through 10
-    python read_stories.py --rows 7               # process only story 7
-    python read_stories.py --ocr gemini           # use Gemini OCR (recommended)
-    python read_stories.py --ocr tesseract        # use Tesseract OCR (fallback)
+    python extract_stories.py
+    python extract_stories.py -o descriptions.csv
+    python extract_stories.py --rows 5-10            # process stories 5 through 10
+    python extract_stories.py --rows 7               # process only story 7
+    python extract_stories.py --ocr gemini           # use Gemini OCR (recommended)
+    python extract_stories.py --ocr tesseract        # use Tesseract OCR (fallback)
 Requirements (install via: pip install -r requirements.txt):
     - requests
     - PyMuPDF
@@ -138,14 +138,14 @@ def parse_args():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""\
 examples:
-  python read_stories.py                      # run with defaults (Gemini OCR)
-  python read_stories.py -n 3                # only process first 3 stories
-  python read_stories.py --rows 5-10         # process stories 5 through 10
-  python read_stories.py --rows 7            # process only story 7
-  python read_stories.py --ocr tesseract     # use Tesseract instead of Gemini
-  python read_stories.py --lang eng          # English descriptions only
-  python read_stories.py -o output.csv       # save results to a CSV file
-  python read_stories.py -q                  # suppress verbose logs
+  python extract_stories.py                      # run with defaults (Gemini OCR)
+  python extract_stories.py -n 3                # only process first 3 stories
+  python extract_stories.py --rows 5-10         # process stories 5 through 10
+  python extract_stories.py --rows 7            # process only story 7
+  python extract_stories.py --ocr tesseract     # use Tesseract instead of Gemini
+  python extract_stories.py --lang eng          # English descriptions only
+  python extract_stories.py -o output.csv       # save results to a CSV file
+  python extract_stories.py -q                  # suppress verbose logs
 """,
     )
     parser.add_argument(
@@ -254,7 +254,8 @@ def extract_drive_file_id(url):
 def extract_cover_image(pdf_path, output_path):
     """Extract the largest image from page 1 of a PDF and save it as PNG.
 
-    Selects the largest image by pixel area (the cover illustration, not logos).
+    Selects the largest image by its rendered size on the page (not intrinsic
+    pixel dimensions), so the cover illustration is chosen over high-res logos.
     Handles CMYK-to-RGB conversion for compatibility.
 
     Returns True if an image was successfully extracted, False otherwise.
@@ -269,17 +270,35 @@ def extract_cover_image(pdf_path, output_path):
             doc.close()
             return False
 
-        # Find the largest image by pixel area
+        # Use get_image_info to find rendered bounding boxes on the page.
+        # This tells us the actual display size, not intrinsic pixel dimensions.
+        image_info_list = page.get_image_info(xrefs=True)
+
         best_xref = None
         best_area = 0
-        for img_info in images:
-            xref = img_info[0]
-            width = img_info[2]
-            height = img_info[3]
-            area = width * height
+
+        for info in image_info_list:
+            xref = info.get("xref", 0)
+            if xref == 0:
+                continue
+            bbox = info.get("bbox", (0, 0, 0, 0))
+            rendered_width = abs(bbox[2] - bbox[0])
+            rendered_height = abs(bbox[3] - bbox[1])
+            area = rendered_width * rendered_height
             if area > best_area:
                 best_area = area
                 best_xref = xref
+
+        # Fallback: if get_image_info didn't work, use intrinsic pixel area
+        if best_xref is None:
+            for img_info in images:
+                xref = img_info[0]
+                width = img_info[2]
+                height = img_info[3]
+                area = width * height
+                if area > best_area:
+                    best_area = area
+                    best_xref = xref
 
         if best_xref is None:
             doc.close()
@@ -294,7 +313,7 @@ def extract_cover_image(pdf_path, output_path):
         pix.save(output_path)
         doc.close()
 
-        log(f"    Extracted cover image ({best_area} pixels): {os.path.basename(output_path)}")
+        log(f"    Extracted cover image (rendered area {best_area:.0f}): {os.path.basename(output_path)}")
         return True
 
     except Exception as e:
