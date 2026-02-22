@@ -1,6 +1,6 @@
 ---
 title: "Lebo and Gogo's Tea party"
-date: 2026-02-18
+date: 2026-02-21
 
 descriptions:
   english: "Lebo is excited to have a day of adventure with Gogo. When Gogo hurts herself, she can’t do anything that Lebo wants to do. What can Gogo and Lebo do to have fun together?"
@@ -17,10 +17,10 @@ titles:
 translators:
     - "Srinish Ramesh"
 
-coverImage: "cover.png"
-draft: false
-
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

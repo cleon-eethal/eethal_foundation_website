@@ -1,6 +1,6 @@
 ---
 title: "Sun Mother"
-date: 2026-02-18
+date: 2026-02-21
 
 descriptions:
   english: "In the winter, sisters Dolmo and Palmo and all the animals are cold. Will Sun Mother hear their pleas for help?"
@@ -17,10 +17,10 @@ titles:
 translators:
     - "Diya Senthilrajan"
 
-coverImage: "cover.png"
-draft: false
-
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

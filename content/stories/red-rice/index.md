@@ -1,6 +1,6 @@
 ---
 title: "Red Rice"
-date: 2026-02-18
+date: 2026-02-21
 
 descriptions:
   english: "Over a pot of red rice, Bei and Dap unfold the many secrets behind red rice. Join them on this heartwarming tale as a secret of the red rice helps Dap bond with his village"
@@ -17,10 +17,10 @@ titles:
 translators:
     - "Roopa Leon"
 
-coverImage: "cover.png"
-draft: false
-
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

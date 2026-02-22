@@ -1,6 +1,6 @@
 ---
 title: "Thunder and Lightning"
-date: 2026-02-18
+date: 2026-02-21
 
 descriptions:
   english: "Thunder and her son, Lightning, lived on earth amongst people. Due to her destructive, naughty son the king sent them to live in the sky away from people"
@@ -17,10 +17,10 @@ titles:
 translators:
     - "Srinish Ramesh"
 
-coverImage: "cover.png"
-draft: false
-
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

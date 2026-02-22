@@ -1,6 +1,6 @@
 ---
 title: "Paper play"
-date: 2026-02-18
+date: 2026-02-21
 
 descriptions:
   english: "Manju ìnds a piece of paper. And in the hands of her friends, it becomes so much more than just a piece of paper. Illustrated using bits of paper, so that each page is a collage, imagination is at play in this little story"
@@ -17,10 +17,10 @@ titles:
 translators:
     - "Paula Sharon"
 
-coverImage: "cover.png"
-draft: false
-
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---
