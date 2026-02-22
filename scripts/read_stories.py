@@ -122,6 +122,7 @@ COL_TRANSLATORS = 7      # Column H: Translators
 COL_ENG_DESC = 8         # Column I: English Description
 COL_TAM_DESC = 9         # Column J: Tamil Description
 COL_STATUS = 10          # Column K: Status
+COL_TAGS = 11            # Column L: Tags (comma-separated)
 
 # Markers that signal the end of the description on the last page
 LEVEL_MARKERS_ENG = ["This is a Level", "This book"]
@@ -230,6 +231,7 @@ def parse_all_rows(csv_text):
             "english_description": _get_col(row, COL_ENG_DESC),
             "tamil_description": _get_col(row, COL_TAM_DESC),
             "status": _get_col(row, COL_STATUS),
+            "tags": _get_col(row, COL_TAGS),
         })
     return rows
 
@@ -1054,6 +1056,7 @@ def extract_description_from_pdf(pdf_path, is_tamil=False):
         return f"[Error reading PDF: {e}]"
 
 
+
 def main():
     global QUIET, OCR_BACKEND
     args = parse_args()
@@ -1250,6 +1253,7 @@ def main():
                 "english_description": eng_desc or story["english_description"],
                 "tamil_description": tam_desc or story["tamil_description"],
                 "status": story["status"],
+                "tags": story["tags"],
             })
 
     total_elapsed = time.time() - start_time
@@ -1263,7 +1267,7 @@ def main():
             "sw_link_eng", "sw_link_tam",
             "translators",
             "english_description", "tamil_description",
-            "status",
+            "status", "tags",
         ]
         # Use human-readable headers matching the spreadsheet
         header_map = {
@@ -1278,6 +1282,7 @@ def main():
             "english_description": "English Description",
             "tamil_description": "Tamil Description",
             "status": "Status",
+            "tags": "Tags",
         }
         with open(args.output, "w", newline="", encoding="utf-8-sig") as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)

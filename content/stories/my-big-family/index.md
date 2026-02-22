@@ -19,4 +19,8 @@ translators:
 
 coverImage: "cover.jpg"
 draft: false
+
+tags:
+    - "storyweaver"
+    - "verified"
 ---

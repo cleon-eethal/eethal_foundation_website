@@ -8,7 +8,7 @@
       </h1>
       <p class="text-xl text-gray-600 max-w-3xl mx-auto">
         {{ $count := len .Pages }}
-        {{ $count }} {{ if eq $count 1 }}story{{ else }}stories{{ end }} translated
+        {{ $count }} {{ if eq $count 1 }}story{{ else }}stories{{ end }} tagged
       </p>
     </header>
 
@@ -93,8 +93,8 @@
       <a href="/stories/" class="text-eethal-600 hover:text-eethal-800 font-medium">
         &larr; All Stories
       </a>
-      <a href="/translators/" class="text-eethal-600 hover:text-eethal-800 font-medium">
-        All Translators &rarr;
+      <a href="/tags/" class="text-eethal-600 hover:text-eethal-800 font-medium">
+        All Tags &rarr;
       </a>
     </div>
   </div>

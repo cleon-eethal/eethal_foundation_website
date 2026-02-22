@@ -8,6 +8,7 @@ canonifyURLs = true
 # Taxonomies
 [taxonomies]
   translator = "translators"
+  tag = "tags"
 
 # Pagination
 [pagination]

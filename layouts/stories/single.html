@@ -36,6 +36,14 @@
           Translated by: {{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="/translators/{{ $t | urlize }}/" class="text-eethal-600 hover:text-eethal-800 hover:underline">{{ $t }}</a>{{ end }}
         </p>
       {{ end }}
+
+      {{ with .Params.tags }}
+        <div class="flex flex-wrap gap-2 mt-3">
+          {{ range . }}
+            <a href="/tags/{{ . | urlize }}/" class="inline-block bg-eethal-100 text-eethal-600 hover:bg-eethal-200 text-sm font-medium px-3 py-1 rounded-full transition-colors">{{ . }}</a>
+          {{ end }}
+        </div>
+      {{ end }}
     </header>
 
     <!-- PDF Viewers - Tabbed Interface -->

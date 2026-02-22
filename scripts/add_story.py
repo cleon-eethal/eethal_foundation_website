@@ -47,6 +47,7 @@ CSV_COLUMNS = {
     'english_description': 'English Description',
     'tamil_description': 'Tamil Description',
     'status': 'Status',
+    'tags': 'Tags',
 }
 
 
@@ -271,6 +272,7 @@ def process_csv_row(row: dict, row_number: int, temp_dir: Path, force: bool = Fa
         translators = row[CSV_COLUMNS['translators']].strip()
         english_description = row[CSV_COLUMNS['english_description']].strip()
         tamil_description = row[CSV_COLUMNS['tamil_description']].strip()
+        tags = row.get(CSV_COLUMNS['tags'], '').strip()
 
         # Create slug and determine story directory
         slug = create_slug(english_title)
@@ -296,7 +298,8 @@ def process_csv_row(row: dict, row_number: int, temp_dir: Path, force: bool = Fa
             english_pdf=english_pdf,
             tamil_pdf=tamil_pdf,
             translators=translators,
-            cover_image_path=str(cover_image_path)
+            cover_image_path=str(cover_image_path),
+            tags=tags,
         )
 
         # Clean up: Delete downloaded temp image ONLY if it was newly downloaded
@@ -485,7 +488,8 @@ def create_story_frontmatter(
     english_pdf: str,
     tamil_pdf: str,
     translators: str,
-    cover_image_filename: str
+    cover_image_filename: str,
+    tags: str = "",
 ) -> str:
     """Generate Hugo front matter for the story."""
 
@@ -509,6 +513,10 @@ def create_story_frontmatter(
                 translator_list.append(name)
     translators_yaml = '\n'.join([f'    - "{t}"' for t in translator_list])
 
+    # Parse tags (comma-separated)
+    tag_list = [t.strip() for t in tags.split(',') if t.strip()] if tags else []
+    tags_yaml = '\n'.join([f'    - "{t}"' for t in tag_list])
+
     frontmatter = f'''---
 title: "{english_title}"
 date: {date.today().isoformat()}
@@ -528,6 +536,9 @@ titles:
 translators:
 {translators_yaml}
 
+tags:
+{tags_yaml}
+
 coverImage: "{cover_image_filename}"
 draft: false
 ---
@@ -544,7 +555,8 @@ def create_story(
     english_pdf: str,
     tamil_pdf: str,
     translators: str,
-    cover_image_path: str
+    cover_image_path: str,
+    tags: str = "",
 ) -> bool:
     """
     Create a new story directory with all necessary files.
@@ -590,7 +602,8 @@ def create_story(
             english_pdf,
             tamil_pdf,
             translators,
-            cover_filename
+            cover_filename,
+            tags=tags,
         )
 
         index_md.write_text(frontmatter, encoding='utf-8')
@@ -601,6 +614,125 @@ def create_story(
     except Exception as e:
         print(f"  Error creating story: {e}")
         return False
+
+
+def _parse_tags(tags_str: str) -> list[str]:
+    """Parse comma-separated tags string into a list of trimmed tag names."""
+    if not tags_str:
+        return []
+    return [t.strip() for t in tags_str.split(',') if t.strip()]
+
+
+def update_story_tags(story_dir: Path, tag_list: list[str]) -> bool:
+    """Update the tags in an existing story's index.md front matter.
+
+    Reads the YAML front matter, adds or replaces the `tags:` block,
+    and writes the file back. Preserves all other front matter and body content.
+
+    Returns True if updated, False on error.
+    """
+    index_md = story_dir / "index.md"
+    if not index_md.exists():
+        return False
+
+    content = index_md.read_text(encoding="utf-8")
+
+    # Split into front matter and body
+    # Front matter is between the first two '---' lines
+    parts = content.split("---", 2)
+    if len(parts) < 3:
+        print(f"  Could not parse front matter in {index_md}")
+        return False
+
+    front_matter = parts[1]
+    body = parts[2]
+
+    # Remove existing tags block if present
+    # Match "tags:\n    - ...\n    - ...\n" (with possible variations in indentation)
+    front_matter = re.sub(
+        r'\ntags:\n(?:\s+- [^\n]+\n)*',
+        '\n',
+        front_matter,
+    )
+
+    # Build tags YAML block
+    tags_yaml = "\ntags:\n"
+    for tag in tag_list:
+        tags_yaml += f'    - "{tag}"\n'
+
+    # Insert tags at end of front matter (before closing ---)
+    front_matter = front_matter.rstrip('\n') + '\n'
+    front_matter += tags_yaml
+
+    # Reconstruct the file
+    new_content = "---" + front_matter + "---" + body
+    index_md.write_text(new_content, encoding="utf-8")
+    return True
+
+
+def process_tags_only(csv_path: str, row_start: int = 0, row_end: int = 0) -> dict:
+    """Process only tags from the spreadsheet and update existing story files.
+
+    Skips image download and story creation. Reads tags from the Tags column
+    and updates front matter of matching stories in content/stories/.
+
+    Returns summary dict with updated/skipped/no_tags counts.
+    """
+    print(f"Updating tags from CSV: {csv_path}\n")
+
+    try:
+        with open(csv_path, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            rows = list(reader)
+    except Exception as e:
+        print(f"Error reading CSV file: {e}")
+        return {'updated': 0, 'skipped': 0, 'no_tags': 0}
+
+    if not rows:
+        print("No rows found in CSV file")
+        return {'updated': 0, 'skipped': 0, 'no_tags': 0}
+
+    updated = 0
+    skipped = 0
+    no_tags = 0
+
+    for idx, row in enumerate(rows, start=2):  # row 1 is header
+        if row_start and idx < row_start:
+            continue
+        if row_end and idx > row_end:
+            continue
+
+        english_title = row.get(CSV_COLUMNS['english_title'], '').strip()
+        if not english_title:
+            skipped += 1
+            continue
+
+        tags_str = row.get(CSV_COLUMNS['tags'], '').strip()
+        tag_list = _parse_tags(tags_str)
+
+        if not tag_list:
+            print(f"  Row {idx}: {english_title} -- no tags, skipping.")
+            no_tags += 1
+            continue
+
+        slug = create_slug(english_title)
+        story_dir = PROJECT_ROOT / 'content' / 'stories' / slug
+
+        if not story_dir.exists():
+            print(f"  Row {idx}: {english_title} -- story dir not found ({slug}/), skipping.")
+            skipped += 1
+            continue
+
+        if update_story_tags(story_dir, tag_list):
+            print(f"  Row {idx}: {english_title} -- updated tags: {', '.join(tag_list)}")
+            updated += 1
+        else:
+            print(f"  Row {idx}: {english_title} -- failed to update tags.")
+            skipped += 1
+
+    # Print summary
+    print(f"\nTags update complete: {updated} updated, {skipped} skipped, {no_tags} had no tags.")
+    return {'updated': updated, 'skipped': skipped, 'no_tags': no_tags}
 
 
 def main():
@@ -617,6 +749,11 @@ def main():
         '--force', action='store_true',
         help="re-process stories even if marked 'done'; re-download images "
              "instead of using cached copies",
+    )
+    parser.add_argument(
+        '--tags-only', action='store_true',
+        help="only update tags in existing story front matter from the spreadsheet. "
+             "Skips image download and story creation. Best used with --rows.",
     )
 
     # # CSV mode arguments (unused — all data comes from default Google Sheet)
@@ -702,6 +839,15 @@ def main():
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
+
+    # --tags-only mode: update tags in existing story front matter and exit
+    if args.tags_only:
+        process_tags_only(str(temp_csv), row_start=row_start, row_end=row_end)
+        try:
+            temp_csv.unlink()
+        except Exception:
+            pass
+        sys.exit(0)
 
     result = process_csv(str(temp_csv), row_start=row_start, row_end=row_end, force=args.force)
 

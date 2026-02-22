@@ -23,4 +23,7 @@ translators:
 
 coverImage: "cover.jpeg"
 draft: false
+
+tags:
+    - "tamil2english"
 ---
