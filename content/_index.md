@@ -1,6 +1,9 @@
 ---
 title: "Home"
 description: "EETHAL Foundation - Education and Empowerment THrough Applied Languages"
+aliases:
+  - /home
+  - /home/
 hero:
   title: "EETHAL (ஈதல்)"
   subtitle: "Empowering youth everywhere through education, technology, and language training"
