@@ -17,6 +17,18 @@ titles:
 translators:
     - "Paula Sharon"
 
+translation:
+  year: 2025
+  url: "https://storyweaver.org.in/en/stories/648123-yapo-andha-naalai-kaapaatrinaan"
+
+original:
+  title: "Yapo Saves The Day"
+  authors:
+    - "Rujeko Moyo"
+  publisher: "Book Dash"
+  year: 2020
+  url: "https://storyweaver.org.in/en/stories/56717-yapo-saves-the-day"
+
 tags:
     - "storyweaver"
     - "verified"

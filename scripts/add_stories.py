@@ -43,6 +43,8 @@ CSV_COLUMNS = {
     'english_pdf': 'English PDF',
     'tamil_pdf': 'Tamil PDF',
     'image': 'Image',
+    'sw_link_eng': 'SW link-Eng',
+    'sw_link_tamil': 'SW link Tamil',
     'translators': 'Translators',
     'english_description': 'English Description',
     'tamil_description': 'Tamil Description',
@@ -273,6 +275,8 @@ def process_csv_row(row: dict, row_number: int, temp_dir: Path, force: bool = Fa
         english_description = row[CSV_COLUMNS['english_description']].strip()
         tamil_description = row[CSV_COLUMNS['tamil_description']].strip()
         tags = row.get(CSV_COLUMNS['tags'], '').strip()
+        sw_link_eng = row.get(CSV_COLUMNS['sw_link_eng'], '').strip()
+        sw_link_tamil = row.get(CSV_COLUMNS['sw_link_tamil'], '').strip()
 
         # Create slug and determine story directory
         slug = create_slug(english_title)
@@ -300,6 +304,8 @@ def process_csv_row(row: dict, row_number: int, temp_dir: Path, force: bool = Fa
             translators=translators,
             cover_image_path=str(cover_image_path),
             tags=tags,
+            sw_link_eng=sw_link_eng,
+            sw_link_tamil=sw_link_tamil,
         )
 
         # Clean up: Delete downloaded temp image ONLY if it was newly downloaded
@@ -490,6 +496,8 @@ def create_story_frontmatter(
     translators: str,
     cover_image_filename: str,
     tags: str = "",
+    sw_link_eng: str = "",
+    sw_link_tamil: str = "",
 ) -> str:
     """Generate Hugo front matter for the story."""
 
@@ -517,6 +525,9 @@ def create_story_frontmatter(
     tag_list = [t.strip() for t in tags.split(',') if t.strip()] if tags else []
     tags_yaml = '\n'.join([f'    - "{t}"' for t in tag_list])
 
+    original_block = f'\noriginal:\n  url: "{sw_link_eng}"\n' if sw_link_eng else ''
+    translation_block = f'\ntranslation:\n  url: "{sw_link_tamil}"\n' if sw_link_tamil else ''
+
     frontmatter = f'''---
 title: "{english_title}"
 date: {date.today().isoformat()}
@@ -535,7 +546,7 @@ titles:
 
 translators:
 {translators_yaml}
-
+{original_block}{translation_block}
 tags:
 {tags_yaml}
 
@@ -557,6 +568,8 @@ def create_story(
     translators: str,
     cover_image_path: str,
     tags: str = "",
+    sw_link_eng: str = "",
+    sw_link_tamil: str = "",
 ) -> bool:
     """
     Create a new story directory with all necessary files.
@@ -604,6 +617,8 @@ def create_story(
             translators,
             cover_filename,
             tags=tags,
+            sw_link_eng=sw_link_eng,
+            sw_link_tamil=sw_link_tamil,
         )
 
         index_md.write_text(frontmatter, encoding='utf-8')
