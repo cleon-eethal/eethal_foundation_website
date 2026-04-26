@@ -1,6 +1,6 @@
 ---
 title: "Sun, Moon and Water"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "A Dhopadhola myth about why the Sun and the Moon stay in the sky"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Paula Sharon"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/49724-sun-moon-and-water"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/637422-suriyan-chandiran-matrum-thanneer?mode=read"
 
 tags:
     - "storyweaver"

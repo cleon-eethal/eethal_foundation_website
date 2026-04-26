@@ -1,6 +1,6 @@
 ---
 title: "DOT - The story of a happy little book"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "little book Little Minnie loves Dot. She can’t do without it. But one day she grows up. What happens to little Dot? Jump right in to find out. This happy, heart warming story about loving books is bound to make every child rush to grab their favourite book"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Paula Sharon"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/263059-dot-the-story-of-a-happy-little-book?story_read=true"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/640001-pulli-magizhchiyoottum-siriya-putthakatthin-kathai?mode=read"
 
 tags:
     - "storyweaver"

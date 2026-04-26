@@ -1,6 +1,6 @@
 ---
 title: "Akai's special mat"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "Akai has a special mat given to her by her aunt. One day she gets lost. What happens next?"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Sarvesh Thirumalai"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/145434-akai-s-special-mat"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/645005-akayin-cirappu-paiy?mode=read"
 
 tags:
     - "storyweaver"

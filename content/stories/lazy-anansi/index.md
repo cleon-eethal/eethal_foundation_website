@@ -1,6 +1,6 @@
 ---
 title: "Lazy Anansi"
-date: 2026-02-14
+date: 2026-04-25
 
 descriptions:
   english: "The reason why spiders have long thin legs"
@@ -17,10 +17,16 @@ titles:
 translators:
     - "Paula Sharon"
 
-coverImage: "cover.png"
-draft: false
+original:
+  url: "https://storyweaver.org.in/en/stories/94509"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/636287"
 
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

@@ -1,6 +1,6 @@
 ---
 title: "What Are These For?"
-date: 2026-02-14
+date: 2026-04-25
 
 descriptions:
   english: "This charming tale with vibrant illustrations and visual clues showcases an innovative blend of learning and laughter. The kitchen is a mess! Who did this? Things are on the floor. What are these objects for?"
@@ -17,10 +17,16 @@ titles:
 translators:
     - "Samikshaa Sivakumar"
 
-coverImage: "cover.png"
-draft: false
+original:
+  url: "https://storyweaver.org.in/en/stories/17775"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/675077-ivai-yellam-yethirkake?mode=read"
 
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

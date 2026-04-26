@@ -1,6 +1,6 @@
 ---
 title: "There's an alien in my house!"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "house! What do you do when there’s an alien in your house? Fight a foe or find a friend?"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Srinish Ramesh"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/109522-there-s-an-alien-in-my-house?story_read=true"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/638765-en-vittil-oru-verrukirakavaci?mode=read"
 
 tags:
     - "storyweaver"

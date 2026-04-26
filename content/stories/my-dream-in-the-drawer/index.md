@@ -1,6 +1,6 @@
 ---
 title: "My dream in the drawer"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "I once had a dream, so small and light, I kept it in a box. I kept it hidden, safe and sound, In my drawer of socks"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Aakash M"
+
+original:
+  url: "https://storyweaver.org.in/en/v0/stories/60914/pages/689770"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/638121-alalmaryil-en-kanavu"
 
 tags:
     - "storyweaver"

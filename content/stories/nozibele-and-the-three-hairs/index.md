@@ -1,6 +1,6 @@
 ---
 title: "Nozibele and the three hairs"
-date: 2026-02-14
+date: 2026-04-25
 
 descriptions:
   english: "hairs Three girls gathering wood decide to freshen up by the river. One of them forgets her beads. What adventure awaits her when she goes back to pick up the beads?"
@@ -17,10 +17,16 @@ titles:
 translators:
     - "Manu Prasad"
 
-coverImage: "cover.png"
-draft: false
+original:
+  url: "https://storyweaver.org.in/en/stories/652700"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/652700"
 
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

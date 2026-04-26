@@ -1,6 +1,6 @@
 ---
 title: "Nang pa bachi"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "Two groups of lively children play a sing-song game. With silly questions and playful tunes, they create a world of laughter and imagination. The fun never ends as they wonder, \"Who will be the next pot-bellied little sister?\""
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Srinish Ramesh"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/609921-nang-pa-bachi?mode=read"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/654584-nan-pa-pacci-acal-veliyittalar-cauramantala-arakkattalai"
 
 tags:
     - "storyweaver"

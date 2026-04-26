@@ -1,6 +1,6 @@
 ---
 title: "Who got the goat?"
-date: 2026-02-14
+date: 2026-04-25
 
 descriptions:
   english: "Chinnasura and Cheekasura spot a stray goat. Both want it. The only way out is to have a neer-more drinking contest. Learn fractions and decimals while the asuras drink up"
@@ -17,10 +17,16 @@ titles:
 translators:
     - "Roopa Leon"
 
-coverImage: "cover.png"
-draft: false
+original:
+  url: "https://storyweaver.org.in/en/stories/356934-who-got-the-goat?mode=read"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/642273-aadu-yaaruku-kidaithathu?mode=read"
 
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

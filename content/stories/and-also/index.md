@@ -1,6 +1,6 @@
 ---
 title: "And also!"
-date: 2026-02-14
+date: 2026-04-25
 
 descriptions:
   english: "Thabo’s make-believe world has no room for his little sister, Keitu. But she has other ideas!"
@@ -17,10 +17,16 @@ titles:
 translators:
     - "Samikshaa Sivakumar"
 
-coverImage: "cover.png"
-draft: false
+original:
+  url: "https://storyweaver.org.in/en/stories/29039"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/637201"
 
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

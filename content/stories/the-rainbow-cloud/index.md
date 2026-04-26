@@ -1,6 +1,6 @@
 ---
 title: "The Rainbow cloud"
-date: 2026-02-14
+date: 2026-04-25
 
 descriptions:
   english: "Born a twin that must be sacrificed, Mkabayi faces a bully and scary ghosts. Will the bond with her sister Mmama save her?"
@@ -17,10 +17,16 @@ titles:
 translators:
     - "Anish Rangarajan"
 
-coverImage: "cover.png"
-draft: false
+original:
+  url: "https://storyweaver.org.in/en/stories/105116-the-rainbow-cloud?mode=read"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/633593"
 
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

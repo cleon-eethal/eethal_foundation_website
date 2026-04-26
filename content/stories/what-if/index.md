@@ -1,6 +1,6 @@
 ---
 title: "What if...?"
-date: 2026-02-14
+date: 2026-04-25
 
 descriptions:
   english: "Nandi is wondering all sorts of strange things about the world. And it begins with a simple question: What if…?"
@@ -17,10 +17,16 @@ titles:
 translators:
     - "Diya Senthilrajan"
 
-coverImage: "cover.png"
-draft: false
+original:
+  url: "http://storyweaver.org.in/en/stories/24790-what-if?mode=read"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/640417"
 
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

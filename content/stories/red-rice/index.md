@@ -1,6 +1,6 @@
 ---
 title: "Red Rice"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "Over a pot of red rice, Bei and Dap unfold the many secrets behind red rice. Join them on this heartwarming tale as a secret of the red rice helps Dap bond with his village"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Roopa Leon"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/612747-red-rice?mode=read"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/672152-sivapu-arisi"
 
 tags:
     - "storyweaver"

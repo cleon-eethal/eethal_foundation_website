@@ -179,6 +179,43 @@
       </div>
     {{ end }}
 
+    <!-- Story Attribution -->
+    {{ $orig := .Params.original | default dict }}
+    {{ $trans := .Params.translation | default dict }}
+    {{ $transCopyright := index $trans "copyright" | default "Eethal Foundation" }}
+    {{ $transYear := index $trans "year" | default (.Date.Format "2006") }}
+    {{ $transLicense := index $trans "license" | default "CC BY 4.0" }}
+    {{ $transUrl := index $trans "url" }}
+    {{ $origTitle := index $orig "title" | default (index .Params.titles "english") }}
+    {{ $origAuthors := index $orig "authors" }}
+    {{ $origPublisher := index $orig "publisher" }}
+    {{ $origYear := index $orig "year" }}
+    {{ $origLicense := index $orig "license" | default "CC BY 4.0" }}
+    {{ $origUrl := index $orig "url" }}
+    {{ $tamilTitle := index .Params.titles "tamil" }}
+
+    {{ $isStoryweaver := in (.Params.tags | default slice) "storyweaver" }}
+
+    {{ if or $tamilTitle $origAuthors $isStoryweaver }}
+      <aside class="mt-12 pt-6 border-t border-gray-200 text-sm text-gray-600 leading-relaxed">
+        <p class="font-semibold text-gray-700 mb-2">Story Attribution:</p>
+        <p>
+          {{ if $tamilTitle }}
+            {{ $translators := .Params.translators }}
+            This story: {{ if $transUrl }}<a href="{{ $transUrl }}" target="_blank" rel="noopener" class="text-eethal-600 hover:text-eethal-800 hover:underline" lang="ta">{{ $tamilTitle }}</a>{{ else }}<span lang="ta">{{ $tamilTitle }}</span>{{ end }}{{ with $translators }} is translated by {{ range $i, $t := . }}{{ if $i }}{{ if eq $i (sub (len $translators) 1) }} and {{ else }}, {{ end }}{{ end }}<a href="/translators/{{ $t | urlize }}/" class="text-eethal-600 hover:text-eethal-800 hover:underline">{{ $t }}</a>{{ end }}{{ end }}. The &copy; for this translation lies with {{ $transCopyright }}, {{ $transYear }}. Some rights reserved. Released under {{ $transLicense }} license.
+          {{ end }}
+          {{ if $origAuthors }}
+            Based on Original story: '{{ if $origUrl }}<a href="{{ $origUrl }}" target="_blank" rel="noopener" class="text-eethal-600 hover:text-eethal-800 hover:underline">{{ $origTitle }}</a>{{ else }}{{ $origTitle }}{{ end }}', by {{ range $i, $a := $origAuthors }}{{ if $i }}{{ if eq $i (sub (len $origAuthors) 1) }} and {{ else }}, {{ end }}{{ end }}{{ $a }}{{ end }}.{{ with $origPublisher }} &copy; {{ . }}{{ with $origYear }}, {{ . }}{{ end }}. Some rights reserved. Released under {{ $origLicense }} license.{{ end }}
+          {{ end }}
+        </p>
+        {{ if $isStoryweaver }}
+          <p class="mt-3">
+            This book was made possible by Pratham Books' StoryWeaver platform. Content under Creative Commons licenses can be downloaded, translated and can even be used to create new stories - provided you give appropriate credit, indicate if changes were made. To know more about this, and the full terms of use and attribution, please visit the following <a href="https://storyweaver.org.in/terms-and-conditions" target="_blank" rel="noopener" class="text-eethal-600 hover:text-eethal-800 hover:underline">link</a>.
+          </p>
+        {{ end }}
+      </aside>
+    {{ end }}
+
     <!-- Back to Stories Link -->
     <div class="mt-12 pt-8 border-t border-gray-200">
       <a href="/stories/" class="text-eethal-600 hover:text-eethal-800 font-medium">

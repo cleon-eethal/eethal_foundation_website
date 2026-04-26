@@ -1,6 +1,6 @@
 ---
 title: "Maria's Family"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "Get introduced to Maria's Family!"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Srinish Ramesh"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/162423-maria-s-family?story_read=true"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/638679-mariyavin-kutumpam?mode=read"
 
 tags:
     - "storyweaver"

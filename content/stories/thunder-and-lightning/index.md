@@ -1,6 +1,6 @@
 ---
 title: "Thunder and Lightning"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "Thunder and her son, Lightning, lived on earth amongst people. Due to her destructive, naughty son the king sent them to live in the sky away from people"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Srinish Ramesh"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/303062-thunder-and-lightning?mode=read"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/653302-itiyum-minnalum"
 
 tags:
     - "storyweaver"

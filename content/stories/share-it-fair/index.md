@@ -1,6 +1,6 @@
 ---
 title: "Share it fair"
-date: 2026-02-14
+date: 2026-04-25
 
 descriptions:
   english: "A math story about the importance of sharing it fairly, even when it difficult to share equally"
@@ -17,10 +17,16 @@ titles:
 translators:
     - "Aakash M"
 
-coverImage: "cover.png"
-draft: false
+original:
+  url: "https://storyweaver.org.in/en/stories/50344"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/636794"
 
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---
