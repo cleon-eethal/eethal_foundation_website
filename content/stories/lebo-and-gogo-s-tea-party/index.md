@@ -1,6 +1,6 @@
 ---
 title: "Lebo and Gogo's Tea party"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "Lebo is excited to have a day of adventure with Gogo. When Gogo hurts herself, she can’t do anything that Lebo wants to do. What can Gogo and Lebo do to have fun together?"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Srinish Ramesh"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/544463-lebo-and-gogo-s-tea-party?mode=read"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/674976-lebo-mattrum-gogovin-thaeneer-virunthu"
 
 tags:
     - "storyweaver"

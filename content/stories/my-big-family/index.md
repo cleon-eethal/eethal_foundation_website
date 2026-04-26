@@ -1,6 +1,6 @@
 ---
 title: "My Big Family"
-date: 2026-01-07
+date: 2026-04-25
 
 descriptions:
   english: "Sometimes it can be tiring and frustrating to have a big family. Would being alone be easier?"
@@ -17,10 +17,10 @@ titles:
 translators:
     - "Roshini Rangarajan"
 
-coverImage: "cover.jpg"
-draft: false
-
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.jpg"
+draft: false
 ---

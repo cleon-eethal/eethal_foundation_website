@@ -1,6 +1,6 @@
 ---
 title: "All About Teeth"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "Animals have all sorts of teeth, and they use them in diéerent ways. Sink your teeth in"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Roopa Leon"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/366147-all-about-teeth?story_read=true"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/637222-parkalai-pattri-arivom"
 
 tags:
     - "storyweaver"

@@ -1,6 +1,6 @@
 ---
 title: "Eaglie's needle"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "Hen loses Eagle's family heirloom"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Sriram Balasubramanian"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/94271-eagle-s-needle?mode=read"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/678252-kalukin-oosi"
 
 tags:
     - "storyweaver"

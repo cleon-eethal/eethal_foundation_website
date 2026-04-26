@@ -1,6 +1,6 @@
 ---
 title: "Mr Motoaung's thirds"
-date: 2026-02-14
+date: 2026-04-25
 
 descriptions:
   english: "A story about thirds, and lunch"
@@ -17,10 +17,16 @@ titles:
 translators:
     - "Sowmya Kannan"
 
-coverImage: "cover.png"
-draft: false
+original:
+  url: "https://storyweaver.org.in/en/stories/94237-mr-motaung-s-thirds?mode=read"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/645198-thiru-mottangin-moondril-oru-pangu"
 
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

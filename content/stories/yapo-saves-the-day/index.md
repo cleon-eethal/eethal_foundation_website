@@ -1,6 +1,6 @@
 ---
 title: "Yapo Saves The Day"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "Yapo loves to play soccer! But he does not like to pass the ball to his teammates. How will Yapo discover that winning is not only about scoring?"
@@ -17,17 +17,11 @@ titles:
 translators:
     - "Paula Sharon"
 
-translation:
-  year: 2025
-  url: "https://storyweaver.org.in/en/stories/648123-yapo-andha-naalai-kaapaatrinaan"
-
 original:
-  title: "Yapo Saves The Day"
-  authors:
-    - "Rujeko Moyo"
-  publisher: "Book Dash"
-  year: 2020
-  url: "https://storyweaver.org.in/en/stories/56717-yapo-saves-the-day"
+  url: "https://storyweaver.org.in/en/stories/234174-yapo-saves-the-day?story_read=true"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/645197-yapo-antha-naalai-kaapatruvaan?mode=read"
 
 tags:
     - "storyweaver"

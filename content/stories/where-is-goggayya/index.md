@@ -1,6 +1,6 @@
 ---
 title: "Where Is Goggayya?"
-date: 2026-02-14
+date: 2026-04-25
 
 descriptions:
   english: "Amma, Ajja and Atte always call Goggayya when Putti is up to some mischief. But what does Goggayya look like? Where does Goggayya hide? Putti wants to know"
@@ -17,10 +17,16 @@ titles:
 translators:
     - "Kavinn Logesh"
 
-coverImage: "cover.png"
-draft: false
+original:
+  url: "https://storyweaver.org.in/en/stories/642225"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/652701"
 
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

@@ -1,6 +1,6 @@
 ---
 title: "Surki and Tirki"
-date: 2026-02-14
+date: 2026-04-25
 
 descriptions:
   english: "Surki and Tirki are the best of friends. But when a new girl joins school, will it change their friendship?"
@@ -17,10 +17,16 @@ titles:
 translators:
     - "Eethal Foundation"
 
-coverImage: "cover.png"
-draft: false
+original:
+  url: "https://storyweaver.org.in/en/stories/643285-surki-and-tirki?mode=read"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/666293-surki-mattrum-thirki"
 
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

@@ -1,6 +1,6 @@
 ---
 title: "Senzo and the Sun"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "The morning sun creeps over the horizon and peeps through the leaves, waking Senzo. Gogo’s rooster shakes his wings, stretches his neck and crows. Koek-a-loek-a-loo! Join Senzo and the sun as they journey through the day"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Paula Sharon"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/19835-senzo-and-the-sun?story_read=true"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/640002-senso-mattrum-suriyan"
 
 tags:
     - "storyweaver"

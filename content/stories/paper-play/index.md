@@ -1,6 +1,6 @@
 ---
 title: "Paper play"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "Manju ìnds a piece of paper. And in the hands of her friends, it becomes so much more than just a piece of paper. Illustrated using bits of paper, so that each page is a collage, imagination is at play in this little story"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Paula Sharon"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/156-paper-play?story_read=true"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/637426-kakitha-vilayaattu?mode=read"
 
 tags:
     - "storyweaver"

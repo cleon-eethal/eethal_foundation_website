@@ -1,6 +1,6 @@
 ---
 title: "Exploration Day!"
-date: 2026-02-14
+date: 2026-04-25
 
 descriptions:
   english: "Dadi tells the children something new about their village. They explore their village and meet some people who tell them more about their work"
@@ -17,10 +17,16 @@ titles:
 translators:
     - "Pooja Harikrishnan"
 
-coverImage: "cover.png"
-draft: false
+original:
+  url: "https://storyweaver.org.in/en/stories/325843"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/648827-aaivu-seiyum-naal?mode=read"
 
 tags:
     - "storyweaver"
     - "verified"
+
+coverImage: "cover.png"
+draft: false
 ---

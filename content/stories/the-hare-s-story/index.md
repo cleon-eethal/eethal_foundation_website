@@ -1,6 +1,6 @@
 ---
 title: "The Hare's Story"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "There is no water in the animal kingdom and so the king called a meeting to find a solution. Everyone shows up, except for the hare. At the meeting, they all agree to dig a well, but not let the hare drink from it. The hare had his own plan. What do you think it was?"
@@ -15,7 +15,13 @@ titles:
   tamil: "முயலின் கதை"
 
 translators:
-    - "Alisha Berger"
+    - "Paula Sharon"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/58953-the-hare-s-story?story_read=true"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/647119-muyalin-kathai?mode=read"
 
 tags:
     - "storyweaver"

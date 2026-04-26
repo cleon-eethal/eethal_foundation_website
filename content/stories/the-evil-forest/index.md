@@ -1,6 +1,6 @@
 ---
 title: "The Evil Forest"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "Three sisters go to the forest in search of firewood, but only two of them return home. What happens to the third sister"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Manu Prasad"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/29681-the-evil-forest?story_read=true"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/637912-theeya-kaadu?mode=read"
 
 tags:
     - "storyweaver"

@@ -1,6 +1,6 @@
 ---
 title: "Pari's Polio Ravivar"
-date: 2026-02-21
+date: 2026-04-25
 
 descriptions:
   english: "Little Pari goes with her mother Seema to get Polio drops. Krishna Bua and the other ASHA didis help the villagers and make 'Polio Ravivar' a huge success"
@@ -16,6 +16,12 @@ titles:
 
 translators:
     - "Anish Rangarajan"
+
+original:
+  url: "https://storyweaver.org.in/en/stories/330466-pari-s-polio-ravivar?story_read=true"
+
+translation:
+  url: "https://storyweaver.org.in/en/stories/646549-pariyin-polio-ravivar?mode=read"
 
 tags:
     - "storyweaver"
